@@ -151,6 +151,9 @@ let g:miniBufExplModSelTarget = 1
 " 'plaintex' instead of 'tex', which results in vim-latex not being loaded.
 " The following changes the default filetype back to 'tex':
 let g:tex_flavor='latex'
+if v:progname =~? "mvim"
+  let vimrplugin_term_cmd = "/Applications/Utilities/iTerm.app/Contents/MacOS/iTerm -t R"
+endif
 
 autocmd FileType python set omnifunc=pysmell#Complete
 
@@ -176,14 +179,12 @@ Bundle "EasyMotion"
 Bundle 'Command-T'
 Bundle "ack.vim"
 Bundle "git://git.wincent.com/command-t.git"
+Bundle 'Indent-Guides'
 
 " vim-r plugin.
 let vimrplugin_conqueplugin = 0
 let vimrplugin_vimpager="horizontal"
 
-if v:progname =~? "mvim"
-  let vimrplugin_term_cmd = "/Applications/Utilities/iTerm.app/Contents/MacOS/iTerm -t R"
-endif
 
 " For pathogen
 call pathogen#runtime_append_all_bundles()

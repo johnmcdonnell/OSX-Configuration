@@ -1,8 +1,10 @@
-" File: taglist.vim
-" Author: Yegappan Lakshmanan (yegappan AT yahoo DOT com)
-" Version: 4.5
-" Last Modified: September 21, 2007
-" Copyright: Copyright (C) 2002-2007 Yegappan Lakshmanan
+" File: taglist-plus.vim
+" Authors: Jezreel Ng (jezreel AT gmail DOT com)
+"          Yegappan Lakshmanan (yegappan AT yahoo DOT com)
+" Version: 1.0
+ "Last Modified: March 16, 2011
+ "Copyright: Copyright (C) 2011 Jezeel Ng
+"            Copyright (C) 2002-2007 Yegappan Lakshmanan
 "            Permission is hereby granted to use and distribute this code,
 "            with or without modifications, provided that this copyright
 "            notice is copied with it. Like anything else that's free,
@@ -10,20 +12,6 @@
 "            kind, either expressed or implied. In no event will the copyright
 "            holder be liable for any damamges resulting from the use of this
 "            software.
-"
-" The "Tag List" plugin is a source code browser plugin for Vim and provides
-" an overview of the structure of the programming language files and allows
-" you to efficiently browse through source code files for different
-" programming languages.  You can visit the taglist plugin home page for more
-" information:
-"
-"       http://vim-taglist.sourceforge.net
-"
-" You can subscribe to the taglist mailing list to post your questions
-" or suggestions for improvement or to report bugs. Visit the following
-" page for subscribing to the mailing list:
-"
-"       http://groups.yahoo.com/group/taglist/
 "
 " For more information about using this plugin, after installing the
 " taglist plugin, use the ":help taglist" command.
@@ -35,8 +23,8 @@
 "    unzip the following two files (the directory structure should be
 "    preserved):
 "
-"       plugin/taglist.vim - main taglist plugin file
-"       doc/taglist.txt    - documentation (help) file
+"       plugin/taglist-plus.vim - main taglist plugin file
+"       doc/taglist-plus.txt    - documentation (help) file
 "
 "    Refer to the 'add-plugin', 'add-global-plugin' and 'runtimepath'
 "    Vim help pages for more details about installing Vim plugins.
@@ -155,6 +143,10 @@ if !exists('loaded_taglist')
     " Vertically split taglist window width setting
     if !exists('Tlist_WinWidth')
         let Tlist_WinWidth = 30
+        let s:auto_width = 0
+    elseif Tlist_WinWidth == 'auto'
+        let Tlist_WinWidth = 30
+        let s:auto_width = 1
     endif
 
     " Horizontally split taglist window height setting
@@ -417,7 +409,11 @@ let s:tlist_def_java_settings = 'java;p:package;c:class;i:interface;' .
                               \ 'f:field;m:method'
 
 " javascript language
-let s:tlist_def_javascript_settings = 'javascript;f:function'
+let s:tlist_def_javascript_settings = 'javascript;f:function;v:variable'
+if !exists('Tlist_javascript_Ctags_Cmd') && executable('jsctags')
+    let Tlist_javascript_Ctags_Cmd = 'jsctags'
+endif
+let Tlist_javascript_Ctags_Allowed_Flags = ['-f', '--sort']
 
 " lisp language
 let s:tlist_def_lisp_settings = 'lisp;f:function'
@@ -540,14 +536,15 @@ function! s:Tlist_Window_Display_Help()
         call append(5, '" s : Select sort field')
         call append(6, '" d : Remove file from taglist')
         call append(7, '" x : Zoom-out/Zoom-in taglist window')
-        call append(8, '" + : Open a fold')
-        call append(9, '" - : Close a fold')
-        call append(10, '" * : Open all folds')
-        call append(11, '" = : Close all folds')
-        call append(12, '" [[ : Move to the start of previous file')
-        call append(13, '" ]] : Move to the start of next file')
-        call append(14, '" q : Close the taglist window')
-        call append(15, '" <F1> : Remove help text')
+        call append(8, '" m : Toggle display of more tag info')
+        call append(9, '" + : Open a fold')
+        call append(10, '" - : Close a fold')
+        call append(11, '" * : Open all folds')
+        call append(12, '" = : Close all folds')
+        call append(13, '" [[ : Move to the start of previous file')
+        call append(14, '" ]] : Move to the start of next file')
+        call append(15, '" q : Close the taglist window')
+        call append(16, '" <F1> : Remove help text')
     endif
 endfunction
 
@@ -941,8 +938,8 @@ function! s:Tlist_FileType_Init(ftype)
         let ctags_flags = ctags_flags . flag
     endwhile
 
-    let s:tlist_{a:ftype}_ctags_args = '--language-force=' . ctags_ftype .
-                            \ ' --' . ctags_ftype . '-types=' . ctags_flags
+    let s:tlist_{a:ftype}_ctags_args = { '--language-force=': ctags_ftype,
+                            \ '--'.ctags_ftype.'-types=': ctags_flags }
     let s:tlist_{a:ftype}_count = cnt
     let s:tlist_{a:ftype}_ctags_flags = ctags_flags
 
@@ -1451,7 +1448,8 @@ function! s:Tlist_Window_Init()
     syntax match TagListComment '^" .*'
     syntax match TagListFileName '^[^" ].*$'
     syntax match TagListTitle '^  \S.*$'
-    syntax match TagListTagScope  '\s\[.\{-\}\]$'
+    syntax region TagListTagScope1  start='\[' end='\]' contains=TagListTagScope1 nextgroup=TagListTagScope2 skipwhite
+    syntax region TagListTagScope2 start='\[' end='\]' contained contains=TaglistTagScope2
 
     " Define the highlighting only if colors are supported
     if has('gui_running') || &t_Co > 2
@@ -1484,10 +1482,12 @@ function! s:Tlist_Window_Init()
                         \ guifg=white ctermfg=white
         endif
         if hlexists('MyTagListTagScope')
-            highlight link TagListTagScope MyTagListTagScope
+            highlight link TagListTagScope1 MyTagListTagScope
         else
-            highlight clear TagListTagScope
-            highlight default link TagListTagScope Identifier
+            highlight clear TagListTagScope1
+            highlight clear TagListTagScope2
+            highlight default link TagListTagScope1 Identifier
+            highlight default link TagListTagScope2 Keyword
         endif
     else
         highlight default TagListTagName term=reverse cterm=reverse
@@ -1550,6 +1550,9 @@ function! s:Tlist_Window_Init()
     " Create buffer local mappings for jumping to the tags and sorting the list
     nnoremap <buffer> <silent> <CR>
                 \ :call <SID>Tlist_Window_Jump_To_Tag('useopen')<CR>
+    " If more languages are required, generate this from a list of options
+    nnoremap <buffer> <silent> m
+                \ :call <SID>Tlist_Window_Toggle_Extra('javascript', 'type')<CR>
     nnoremap <buffer> <silent> o
                 \ :call <SID>Tlist_Window_Jump_To_Tag('newwin')<CR>
     nnoremap <buffer> <silent> p
@@ -1765,6 +1768,10 @@ function! s:Tlist_Window_Refresh()
     if g:Tlist_File_Fold_Auto_Close
         " Close all the folds
         silent! %foldclose
+    endif
+
+    if !g:Tlist_Use_Horiz_Window && s:auto_width
+        exe 'vertical resize '.g:Tlist_WinWidth
     endif
 
     " Move the cursor to the top of the taglist window
@@ -2007,6 +2014,10 @@ function! s:Tlist_Window_Refresh_File(filename, ftype)
     endif
     call s:Tlist_Window_Update_Line_Offsets(fidx + 1, 1, end - start + 1)
 
+    if !g:Tlist_Use_Horiz_Window && s:auto_width
+        exe 'vertical resize '.g:Tlist_WinWidth
+    endif
+
     " Now that we have updated the taglist window, update the tags
     " menu (if present)
     if g:Tlist_Show_Menu
@@ -2121,8 +2132,10 @@ function! s:Tlist_Get_Tag_Linenum(fidx, tidx)
 
     " Parse and extract the tag line number
     let tag_line = s:tlist_{a:fidx}_{a:tidx}_tag
-    let start = strridx(tag_line, 'line:') + 5
-    let end = strridx(tag_line, "\t")
+    let start = match(tag_line, 'line\(no\)\?:')
+    let start = stridx(tag_line, ':', start) + 1
+    let end = stridx(tag_line, "\t", start)
+
     if end < start
         let {tline_var} = strpart(tag_line, start) + 0
     else
@@ -2139,7 +2152,7 @@ endfunction
 "
 "     tag_name<TAB>file_name<TAB>ex_cmd;"<TAB>extension_fields
 "
-function! s:Tlist_Parse_Tagline(tag_line)
+function! s:Tlist_Parse_Tagline(tag_line,ftype)
     if a:tag_line == ''
         " Skip empty lines
         return
@@ -2186,11 +2199,13 @@ function! s:Tlist_Parse_Tagline(tag_line)
         " Add the tag scope, if it is available and is configured. Tag
         " scope is the last field after the 'line:<num>\t' field
         if g:Tlist_Display_Tag_Scope
-            let tag_scope = s:Tlist_Extract_Tag_Scope(a:tag_line)
-            if tag_scope != ''
-                let ttxt = ttxt . ' [' . tag_scope . ']'
-            endif
+            let ttxt .= s:Tlist_Get_Scope_String(a:tag_line, a:ftype)
         endif
+    endif
+
+    if !g:Tlist_Use_Horiz_Window && s:auto_width
+        " Add 3 for the fold columns
+        let g:Tlist_WinWidth = max([g:Tlist_WinWidth, strlen(ttxt)+3])
     endif
 
     " Add this tag to the tag type variable
@@ -2198,6 +2213,17 @@ function! s:Tlist_Parse_Tagline(tag_line)
 
     " Save the tag name
     let {fidx_tidx}_tag_name = tag_name
+endfunction
+
+function! s:Tlist_Get_Scope_String(tag_line, ftype)
+    let ttxt = ''
+    let tag_scopes = s:Tlist_Extract_Tag_Scope(a:tag_line)
+    for [extradata_name, extradata_content] in items(tag_scopes)
+        if !exists('g:Tlist_{a:ftype}_Hide_Extras') || match(g:Tlist_{a:ftype}_Hide_Extras, extradata_name) == -1
+            let ttxt = ttxt . ' [' . extradata_content . ']'
+        endif
+    endfor
+    return ttxt
 endfunction
 
 " Tlist_Process_File
@@ -2233,20 +2259,26 @@ function! s:Tlist_Process_File(filename, ftype)
     let s:tlist_{fidx}_valid = 1
 
     " Exuberant ctags arguments to generate a tag list
-    let ctags_args = ' -f - --format=2 --excmd=pattern --fields=nks '
+    let ctags_args = { '-f': ' -', '--format=': '2', '--excmd=': 'pattern', '--fields=': 'nks' }
 
     " Form the ctags argument depending on the sort type
     if s:tlist_{fidx}_sort_type == 'name'
-        let ctags_args = ctags_args . '--sort=yes'
+        let ctags_args['--sort'] = '=yes'
     else
-        let ctags_args = ctags_args . '--sort=no'
+        let ctags_args['--sort'] = '=no'
     endif
 
     " Add the filetype specific arguments
-    let ctags_args = ctags_args . ' ' . s:tlist_{a:ftype}_ctags_args
+    call extend(ctags_args, s:tlist_{a:ftype}_ctags_args)
 
     " Ctags command to produce output with regexp for locating the tags
-    let ctags_cmd = g:Tlist_Ctags_Cmd . ctags_args
+    if exists('g:Tlist_{a:ftype}_Ctags_Cmd')
+        let ctags_cmd = g:Tlist_{a:ftype}_Ctags_Cmd
+        let ctags_args = filter(ctags_args, 'match(g:Tlist_javascript_Ctags_Allowed_Flags, "^".v:key."$") != -1')
+    else
+        let ctags_cmd = g:Tlist_Ctags_Cmd
+    endif
+    let ctags_cmd = ctags_cmd . ' ' . join(values(map(ctags_args, 'v:key . v:val')))
     let ctags_cmd = ctags_cmd . ' "' . a:filename . '"'
 
     if &shellxquote == '"'
@@ -2326,11 +2358,16 @@ function! s:Tlist_Process_File(filename, ftype)
         let s:fidx = fidx
         let s:tidx = 0
 
+        " Tlist_Parse_Tagline will adjust this accordingly
+        if !g:Tlist_Use_Horiz_Window && s:auto_width
+            let g:Tlist_WinWidth = 0
+        endif
+
         " Process the ctags output one line at a time.  The substitute()
         " command is used to parse the tag lines instead of using the
         " matchstr()/stridx()/strpart() functions for performance reason
         call substitute(cmd_output, "\\([^\n]\\+\\)\n",
-                    \ '\=s:Tlist_Parse_Tagline(submatch(1))', 'g')
+                    \ '\=s:Tlist_Parse_Tagline(submatch(1),a:ftype)', 'g')
 
         " Save the number of tags for this file
         let s:tlist_{fidx}_tag_count = s:tidx
@@ -2401,10 +2438,7 @@ function! s:Tlist_Process_File(filename, ftype)
                 " Add the tag scope, if it is available and is configured. Tag
                 " scope is the last field after the 'line:<num>\t' field
                 if g:Tlist_Display_Tag_Scope
-                    let tag_scope = s:Tlist_Extract_Tag_Scope(one_line)
-                    if tag_scope != ''
-                        let ttxt = ttxt . ' [' . tag_scope . ']'
-                    endif
+                    let ttxt .= s:Tlist_Get_Scope_String(a:tag_line, a:ftype)
                 endif
             endif
 
@@ -2517,11 +2551,14 @@ function! s:Tlist_Window_Close()
     endif
 
     if winnr() == winnum
-        " Already in the taglist window. Close it and return
+        " Already in the taglist window. Close it and return.
+        " Store the buffer that was selected prior to the taglist buffer
+        let prev_buf = bufnr('#')
         if winbufnr(2) != -1
             " If a window other than the taglist window is open,
             " then only close the taglist window.
             close
+            call s:Tlist_Exe_Cmd_No_Acmds(bufwinnr(prev_buf) . 'wincmd w')
         endif
     else
         " Goto the taglist window, close it and then come back to the
@@ -2615,12 +2652,15 @@ function! s:Tlist_Window_Toggle()
         return
     endif
 
+    " Store the current buffer
+    let current_buf = winbufnr(0)
     call s:Tlist_Window_Open()
 
     " Go back to the original window, if Tlist_GainFocus_On_ToggleOpen is not
     " set
     if !g:Tlist_GainFocus_On_ToggleOpen
-        call s:Tlist_Exe_Cmd_No_Acmds('wincmd p')
+        let prev_win = bufwinnr(current_buf)
+        call s:Tlist_Exe_Cmd_No_Acmds(prev_win . 'wincmd w')
     endif
 
     " Update the taglist menu
@@ -2767,7 +2807,7 @@ function! s:Tlist_Extract_Tagtype(tag_line)
     " ends with the /;"\t string. We add 4 at the end to skip the characters
     " in this special string..
     let start = strridx(a:tag_line, '/;"' . "\t") + 4
-    let end = strridx(a:tag_line, 'line:') - 1
+    let end = match(a:tag_line,  'line\(no\)\?:') - 1
     let ttype = strpart(a:tag_line, start, end - start)
 
     return ttype
@@ -2776,16 +2816,50 @@ endfunction
 " Tlist_Extract_Tag_Scope
 " Extract the tag scope from the tag text
 function! s:Tlist_Extract_Tag_Scope(tag_line)
-    let start = strridx(a:tag_line, 'line:')
-    let end = strridx(a:tag_line, "\t")
+    let start = match(a:tag_line, 'line\(no\)\?:')
+    let end = stridx(a:tag_line, "\t", start)
     if end <= start
-        return ''
+        return {}
     endif
 
-    let tag_scope = strpart(a:tag_line, end + 1)
-    let tag_scope = strpart(tag_scope, stridx(tag_scope, ':') + 1)
+    let tag_extras = {}
 
-    return tag_scope
+    let tag_extra = strpart(a:tag_line, end + 1)
+    while tag_extra != ''
+        let tag_extra_separator_start = stridx(tag_extra, ':')
+        let tag_extra_content_start = tag_extra_separator_start + 1
+        let tag_extra_content_end = stridx(tag_extra, "\t")
+        if tag_extra_content_end == -1
+            let tag_extra_content_end = strlen(tag_extra)
+        endif
+        let tag_extra_name = strpart(tag_extra, 0, tag_extra_separator_start)
+        let tag_extra_content = strpart(tag_extra, tag_extra_content_start, tag_extra_content_end - tag_extra_content_start)
+        let tag_extras[tag_extra_name] = tag_extra_content
+        let tag_extra = strpart(tag_extra, tag_extra_content_end + 1)
+    endwhile
+
+    return tag_extras
+endfunction
+
+function! s:Tlist_Window_Toggle_Extra(ftype, extra_name)
+    if !exists('g:Tlist_{a:ftype}_Hide_Extras')
+        return
+    endif
+    let index = index(g:Tlist_{a:ftype}_Hide_Extras, a:extra_name)
+    if index == -1
+        call add(g:Tlist_{a:ftype}_Hide_Extras, a:extra_name)
+    else
+        unlet g:Tlist_{a:ftype}_Hide_Extras[index]
+    endif
+    if s:auto_width
+        let g:Tlist_WinWidth = 30
+    endif
+
+    let cur_lnum = line('.')
+    let cur_col = col('.')
+    call s:Tlist_Window_Update_File()
+    call s:Tlist_Window_Check_Width()
+    call cursor(cur_lnum, cur_col)
 endfunction
 
 " Tlist_Refresh()

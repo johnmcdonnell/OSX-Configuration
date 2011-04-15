@@ -30,4 +30,6 @@ for p in sys.path:
         vim.command(r"set path+=%s" % (p.replace(" ", r"\ ")))
 EOF
 
+
+
 source ~/.vim/ftplugin/python/jpythonfold.vim
