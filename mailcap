@@ -1,0 +1,10 @@
+application/pdf; open -a Skim %s; nametemplate=%s.pdf; copiousoutput
+application/dvi; xdvi %s; nametemplate=%s.dvi; copiousoutput
+image/*;         feh %s; copiousoutput
+text/html;       midori -a %s; test=test -n "$DISPLAY"; nametemplate=%s.html
+text/html;       midori -a %s; test=test -n "$DISPLAY"; nametemplate=%s.html; copiousoutput
+application/vnd.openxml;    open -a 'Microsoft Excel' %s; nametemplate=%s.xlsx
+#application/msword; open -a 'Microsoft Word' %s; nametemplate=%s.doc
+application/msword; open %s; nametemplate=%s.doc
+application/msword; open %s; nametemplate=%s.docx
+#application/msword; open -a 'Microsoft Word' %s; nametemplate=%s.docx
