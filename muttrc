@@ -21,7 +21,7 @@ set sendmail="/usr/bin/msmtp"
 set folder = "$HOME/Mail/jmcdon10"  #"imaps://imap.gmail.com:993"
 
 #set spoolfile = /var/spool/mail/j # "+INBOX"
-set spoolfile = +INBOX
+set spoolfile = +priority
 set mbox_type=Maildir
 set record ="[Gmail].Sent Mail"
 set postponed = "+drafts"
@@ -43,6 +43,7 @@ set sort_browser=alpha
 # Bindings:
 bind editor <space> noop
 macro index gi "<change-folder>=INBOX<enter>" "Go to inbox"
+macro index gp "<change-folder>=priority<enter>" "Go to priority"
 macro index ga "<change-folder>=archive<enter>" "Go to all mail"
 macro index gs "<change-folder>=sent<enter>" "Go to Sent Mail"
 macro index gd "<change-folder>=drafts<enter>" "Go to drafts"
