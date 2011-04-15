@@ -1,4 +1,0 @@
-#!/Library/Frameworks/Python.framework/Versions/6.0.4/Resources/Python.app/Contents/MacOS/Python
-
-from pyflakes.scripts.pyflakes import main
-main()

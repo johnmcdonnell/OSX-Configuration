@@ -1,5 +1,0 @@
-
-IndentGuidesToggle
-colorscheme jellybeans
-
-

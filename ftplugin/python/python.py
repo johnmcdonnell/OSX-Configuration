@@ -1,3 +1,0 @@
-
-
-:setlocal omnifunc=pysmell#Complete
