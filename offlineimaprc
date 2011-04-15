@@ -36,7 +36,7 @@ metadata = ~/.offlineimap
 # not use "general" for an account name.
 #
 
-accounts = Test
+accounts = jmcdon10
 
 # Offlineimap can synchronize more the one account at a time.  If you
 # want to enable this feature, set the below value to something
@@ -125,8 +125,8 @@ ignore-readonly = no
 # The header, peritem, sep, and footer are all Python expressions passed
 # through eval, so you can (and must) use Python quoting.
 
-enabled = no
-filename = ~/Mutt/muttrc.mailboxes
+enabled = yes
+filename = ~/.mutt/mailboxes
 header = "mailboxes "
 peritem = "+%(accountname)s/%(foldername)s"
 sep = " "
@@ -153,7 +153,7 @@ statuschar = .
 # This is an account definition clause.  You'll have one of these
 # for each account listed in general/accounts above.
 
-[Account Test]
+[Account jmcdon10]
 ########## Basic settings
 
 # These settings specify the two folders that you will be syncing.
@@ -290,3 +290,17 @@ realdelete = no
 #
 # spamfolder = [Google Mail]/Spam
 
+nametrans = lambda folder: re.sub('.*Spam$', 'spam', 
+    re.sub('.*Drafts$', 'drafts', 
+    re.sub('.*Sent Mail$', 'sent', 
+    re.sub('.*Starred$', 'flagged', 
+    re.sub('.*Trash$', 'trash', 
+    re.sub('.*Important$', 'priority', 
+    re.sub('.*MacPhoneHome$', 'mph', 
+    re.sub('.*All Mail$', 'archive', folder))))))))
+
+#folderfilter = lambda foldername: foldername not in [
+#		'archive',
+#		'mph' ]
+
+folderfilter = lambda foldername: foldername not in ['MacPhoneHome', "[Gmail]/All Mail", "[Gmail]/Spam"]

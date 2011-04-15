@@ -27,4 +27,4 @@ etc., at least something that works for one guy.
 Automated install
 -----------------
 
-I use ``./make.sh`` to install them. Do this at your own risk. 
+I use ``./make.sh`` to install the files here. Do this at your own risk. 
