@@ -10,15 +10,15 @@ do
 	
 	if [[ `expr $file : "source"` -ne 0 ]];
 	then
-		echo ~/$file
-		#ginstall -p -D -m 440 $file ~/$file
+		echo "Installing " ~/$file
+		ginstall -p -D -m 440 $file ~/$file
 	elif [[ `expr $file : "config"` -ne 0 ]]; 
 	then
-		echo ~/$file
-		#ginstall -p -D -m 440 $file ~/$file
+		echo "Installing " ~/$file
+		ginstall -p -D -m 440 $file ~/$file
 	else
-		echo ~/.$file
-		#ginstall -p -D -m 440 $file ~/.$file
+		echo "Installing "~/.$file
+		ginstall -p -D -m 440 $file ~/.$file
 	fi
 done
 
