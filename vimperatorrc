@@ -1,0 +1,29 @@
+"2.3.1 (created: 2010/04/07 18:25:13)
+
+let g:hintsio="iO"
+let g:hintchars="hjkl"
+" set fbwhitelist=undefined
+" set "hinttags=//*[contains(@class, 'lk ') or @class='msc' or @class='ll' or @class='setl' or @class='lkw' or starts-with(@class, 'sc ')] | //tr[@class='rr' or @class='ur']/td[position()=5] | //div/span[contains(@class, 'bz_rbbb')] | //span[@class='l' and contains(@id, 'sl_')] | //span[@selector] | //span[@role='link'][not(ancestor::tr//td[@class='mka4te'])] | //div[@act][not(ancestor::div[contains(concat(' ', @class, ' '), ' zWKgkf ')]) or (ancestor::div[contains(concat(' ', @class, ' '), ' zWKgkf ') and contains(@style, 'visibility')])] | //*[@unselectable='on'] | //div[contains(concat(' ', @class, ' '), ' IUCKJe ')] | //*[contains(concat(' ', @class, ' '), ' XoqCub ')]/div[@class='YrHFdf'][count(descendant-or-self::table)=0] | //td[@class='mka4te']/img | //td/span[starts-with(@class, 'lHQn1d')]/img | //*[@class='rj1J6b' or @class='YCDlS' or @class='u1T3K' or @class='iVE0ue' or @class='u7uAnb'] | //td[@class='mka4te']/ancestor::tr/td[5] | //div[@class='c3pyI']/span | //*[contains(concat(' ', @class, ' '), ' MRoIub ')] | //span[@class='mrKIf'] | //img[contains(@src, 'cleardot.gif')] | //*[@idlink][count(descendant-or-self::span[@role='link'])=0 and count(descendant-or-self::a)=0] | //table[@class='Ir5Jyf']//span | //*[contains(concat(' ', @class, ' '), ' GaVz0 ')] | //*[contains(concat(' ', @class, ' '), ' Gf76kb ')] | //*[contains(concat(' ', @class, ' '), ' GRpVjf ')] | //span[contains(concat(' ', @class, ' '), ' WQ9l9c ')] | //div[contains(concat(' ', @class), ' goog-menuitem')] | //input[not(@type='hidden')] | //xhtml:input[not(@type='hidden')] | //a | //xhtml:a | //area | //xhtml:area | //iframe | //xhtml:iframe | //textarea | //xhtml:textarea | //button | //xhtml:button | //select | //xhtml:select | //*[@onclick or @onmouseover or @onmousedown or @onmouseup or @oncommand or @role='link']"
+set runtimepath=/Users/j/.vimperator
+source! /Users/j/.vimperatorrc.local
+
+set defsearch=duck
+
+" map Q+ :js Zotero_Browser.scrapeThisPage(".")<CR>
+
+set editor='/opt/scripts/mvim -f'
+set visualbell
+set gui=none
+set gui=tabs
+" Provides search engine results from suggestengine:
+" set complete+='S' 
+set runtimepath=/Users/j/.vimperator
+
+" My commands:
+command! editrc viewsource! /Users/j/.vimperatorrc
+command! humangui set gui=navigation
+command! nohumangui set gui=nonavigation
+
+map 
+
+" vim: set ft=vimperator:

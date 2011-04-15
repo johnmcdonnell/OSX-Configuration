@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xbel PUBLIC "+//IDN python.org//DTD XML Bookmark Exchange Language 1.0//EN//XML" "http://www.python.org/topics/xml/dtds/xbel-1.0.dtd">
+<xbel version="1.0" xmlns:midori="http://www.twotoasts.de">
+<info>
+<metadata owner="http://www.twotoasts.de"/>
+</info>
+<bookmark href="https://trac.macports.org/attachment/ticket/26151/working_catalog">
+<title>‪Attachment – MacPorts</title>
+<info>
+<metadata midori:icon="text-x-generic" midori:history-step="2" owner="http://www.twotoasts.de"/>
+</info>
+</bookmark>
+<bookmark href="http://html5test.com/">
+<title>‪The HTML5 test - How well does your browser support HTML5?</title>
+<info>
+<metadata midori:history-step="2" owner="http://www.twotoasts.de"/>
+</info>
+</bookmark>
+<bookmark href="http://duckduckgo.com/?q=makedraggable%20html5">
+<title>‪makedraggable html5 at DuckDuckGo</title>
+<info>
+<metadata midori:history-step="2" owner="http://www.twotoasts.de"/>
+</info>
+</bookmark>
+<bookmark href="http://cssgallery.info/a-beginners-mootools-create-draggable-and-resizable-elements/">
+<title>‪A beginner’s mootools – create draggable and resizable elements | cssgallery.info</title>
+<info>
+<metadata midori:icon="text-x-generic" midori:history-step="2" owner="http://www.twotoasts.de"/>
+</info>
+</bookmark>
+<bookmark href="http://www.ipass.net/kenwahl/mutt/index.shtml">
+<title>‪Ken&apos;s Mutt Page</title>
+<info>
+<metadata midori:icon="text-x-generic" midori:history-step="2" owner="http://www.twotoasts.de"/>
+</info>
+</bookmark>
+<bookmark href="http://www.nytimes.com/imagepages/2010/01/03/books/review/Roiphe-t_CA0-jump.html">
+<title>‪Books &gt; Image &gt;</title>
+<info>
+<metadata midori:history-step="2" owner="http://www.twotoasts.de"/>
+</info>
+</bookmark>
+<bookmark href="http://www.nytimes.com/imagepages/2010/01/03/books/review/Roiphe-t_CA0-jump.html">
+<title>‪Books &gt; Image &gt;</title>
+<info>
+<metadata midori:history-step="2" owner="http://www.twotoasts.de"/>
+</info>
+</bookmark>
+<bookmark href="http://git.xfce.org/apps/terminal/commit/?id=7abbb22a5431b41679ba4d3aad5976c94ccac42d">
+<title>‪terminal - Xfce Terminal Emulator</title>
+<info>
+<metadata midori:icon="text-x-generic" midori:history-step="2" owner="http://www.twotoasts.de"/>
+</info>
+</bookmark>
+<bookmark href="https://bugzilla.xfce.org/process_bug.cgi">
+<title>‪Bug 7457 processed</title>
+<info>
+<metadata midori:icon="text-x-generic" midori:history-step="2" owner="http://www.twotoasts.de"/>
+</info>
+</bookmark>
+<bookmark href="file:///Users/j/source/pypsyexp/pypsyexp.html">
+<title>‪Python: module pypsyexp</title>
+<info>
+<metadata midori:icon="text-x-generic" midori:history-step="2" owner="http://www.twotoasts.de"/>
+</info>
+</bookmark>
+</xbel>

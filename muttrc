@@ -1,0 +1,163 @@
+# Based on the advice of: http://crunchbanglinux.org/wiki/howto/howto_setup_mutt_with_gmail_imap
+
+#================================================= =====#
+# Boring details
+set realname = "John McDonnell"
+set from = "john.mcdonnell@nyu.edu"
+set use_from = yes
+set envelope_from ="yes"
+set sendmail="/usr/bin/msmtp"
+
+# IMAP setup
+set my_pass=`security find-internet-password -g -a jmcdon10@gmail.com -s imap.gmail.com 2>&1 | grep password | sed 's/password: "\(.*\)"/\1/'`
+set imap_user = "jmcdon10@gmail.com"
+set imap_pass = $my_pass
+set smtp_url = "smtp://jmcdon10@smtp.gmail.com:587/"
+set smtp_pass = $my_pass
+
+set folder = "imaps://imap.gmail.com:993"
+set spoolfile = "+INBOX"
+set postponed ="+[Gmail]/Drafts"
+set trash = "imaps://imap.gmail.com/[Gmail]/Trash"
+
+# Polling
+mailboxes +INBOX +NYU
+set mail_check = 30
+
+set header_cache =~/.mutt/cache/headers
+set message_cachedir =~/.mutt/cache/bodies
+set certificate_file =~/.mutt/certificates
+
+# Bindings:
+bind editor <space> noop
+macro index gi "<change-folder>=INBOX<enter>" "Go to inbox"
+macro index ga "<change-folder>=[Gmail]/All Mail<enter>" "Go to all mail"
+macro index gs "<change-folder>=[Gmail]/Sent Mail<enter>" "Go to Sent Mail"
+macro index gd "<change-folder>=[Gmail]/Drafts<enter>" "Go to drafts"
+macro index nyu "<change-folder>=NYU<enter>" "Open NYU mailbox"
+macro index <Esc>1 "<next-unread-mailbox>" "Next Mailbox with Unread Item(s)"
+
+# Fix annoyances
+set move = no  #Stop asking to "move read messages to mbox"!
+set imap_keepalive = 900
+
+
+#================================================= =====#
+# Order of headers and what to show
+ignore "Authentication-Results:"
+ignore "DomainKey-Signature:"
+ignore "DKIM-Signature:"
+hdr_order Date From To Cc
+
+ignore *
+unignore from: date subject to cc
+unignore x-mailing-list: posted-to:
+unignore x-mailer:
+
+# For better looks
+set markers=no # don't put '+' at the beginning of wrapped lines
+set pager_index_lines= 5 # how large is the index window?
+set sort = 'threads'
+set sort_aux = 'last-date-received'
+# set sort=reverse-date-sent # How do I get this and 'thread'?
+set imap_check_subscribed
+
+
+# A Rolodeck
+set alias_file= ~/.mutt/aliases
+set sort_alias= alias
+set reverse_alias=yes
+source $alias_file
+
+
+#================================================= =====#
+# which editor do you want to use? 
+# vim of course!
+set editor="vim -c 'set tw=70 et' '+/^$' " 
+set edit_headers # See the headers when editing
+
+#================================================= =====#
+# Aliases
+
+set sort_alias=alias # sort aliases in alpha order by alias name
+
+
+###================================================= =====#
+###---- Mutt Colors -------
+### 
+###color object foreground background
+
+color hdrdefault yellow black
+color quoted brightred black
+color signature magenta black
+color indicator black cyan
+color attachment black green
+color error red black
+color message white black
+color search brightwhite magenta
+color status black red
+color tree red black
+color normal white black
+color tilde green black
+color bold brightyellow black
+color markers red black
+color header yellow black ".*."
+color header brightwhite black "^(From|Subject):"
+mono header bold "^(From|Subject):"
+color index brightblue black ~N
+color index red black ~F
+color index black green ~T
+color index brightwhite black ~D
+mono index bold ~N
+mono index bold ~F
+mono index bold ~T
+mono index bold ~D
+
+# Various smilies and the like
+color body brightgreen black "<[Ee]?[Bb]?[Gg]>"
+color body brightgreen black "<[Bb][Gg]>"
+color body brightgreen black " [;:]-*[)>(<|]"
+
+# URLs
+color body brightblue black "(http|ftp|news|telnet|finger)://[^ \"\t\r\n]*"
+color body brightblue black "mailto:[-a-z_0-9.]+@[-a-z_0-9.]+"
+mono body bold "(http|ftp|news|telnet|finger)://[^ \"\t\r\n]*"
+mono body bold "mailto:[-a-z_0-9.]+@[-a-z_0-9.]+"
+
+# email addresses
+color body brightblue black "[-a-z_0-9.%$]+@[-a-z_0-9.]+\\.[-a-z][-a-z]+"
+mono body bold "[-a-z_0-9.%$]+@[-a-z_0-9.]+\\.[-a-z][-a-z]+"
+
+
+
+# make quotes colorful
+color quoted    cyan black
+color quoted1   green  black
+color quoted2   yellow black
+color quoted3   red    black
+color quoted4   brightcyan black
+color quoted5   brightgreen black
+color quoted6   brightyellow black
+color quoted7   brightred black
+
+
+#=======================================================#
+# Odds and ends
+set smart_wrap # Don't wrap mid-word
+set pager_context=5 # Retain 5 lines of previous page when scrolling.
+set status_on_top # Status bar on top.
+push <show-version> # Shows mutt version at startup
+
+# Contacts import
+set query_command="/Users/j/source/goobook-read-only/goobook.py query '%s'"
+macro index a "/Users/j/source/goobook-read-only/goobook.py add" 
+bind editor <Tab> complete-query
+bind editor ^T complete
+macro pager a "/Users/j/source/goobook-read-only/goobook.py add"
+
+# W3m browser integration
+macro pager \cb <pipe-entry>'w3m -m'<enter> 'Follow links in w3m'
+macro index \cb <pipe-entry>'w3m -m'<enter> 
+
+# try to view html.
+# auto_view text/html

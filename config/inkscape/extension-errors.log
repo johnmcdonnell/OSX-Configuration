@@ -1,0 +1,31 @@
+Extension "DXF Output" failed to load because a dependency was not met.
+Dependency:
+  type: executable
+  location: path
+  string: pstoedit
+  description: pstoedit must be installed to run; see http://www.pstoedit.net/pstoedit
+
+Extension "LaTeX formula" failed to load because a dependency was not met.
+Dependency:
+  type: executable
+  location: path
+  string: pstoedit
+
+Extension "XFIG Input" failed to load because a dependency was not met.
+Dependency:
+  type: executable
+  location: path
+  string: fig2dev
+
+Extension "GIMP XCF" failed to load because a dependency was not met.
+Dependency:
+  type: executable
+  location: path
+  string: gimp
+
+Extension "Sketch Input" failed to load because a dependency was not met.
+Dependency:
+  type: executable
+  location: path
+  string: skconvert
+

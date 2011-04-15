@@ -1,0 +1,20 @@
+which
+which numpy
+which ls
+which ls | echo
+which ls
+import numpy
+which numpy
+numpy
+which d
+whcih st
+which st
+which cp
+env -p
+path
+echo path
+echo $path
+echo $PATH
+echo PATH
+env PATH
+mate /opt/python/lib/python2.6/site-packages/ipython-0.10-py2.6.egg/IPython/Extensions

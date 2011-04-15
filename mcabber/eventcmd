@@ -1,0 +1,14 @@
+#!/bin/bash
+
+if [[ $1 == "MSG" && $2 == "IN" && -n $4 ]]
+then
+	growlnotify $3 < $4
+fi
+
+rm $4
+
+#if [ $1 == "UNREAD" ]
+#then
+	#echo $2 " messages unread." | growlnotify
+#fi
+

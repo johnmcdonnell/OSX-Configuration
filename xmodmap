@@ -1,0 +1,11 @@
+! Command-left: 63
+! Command-right: 71
+! Control-left?: 67
+! Option-left: 66
+! Option-right: 69
+
+clear Mod1
+add Mod1 = Meta_L Meta_R
+clear Mod2
+add Mod2 = Mode_switch
+
