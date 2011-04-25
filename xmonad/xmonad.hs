@@ -89,8 +89,8 @@ toRemove x = []
 toAdd x  = 
      -- [ ((modm             , xK_p), spawn myDmenuTitleBar)
      [ ((modm             , xK_p), prompt ("exec") defaultXPConfig)
-     , ((modm .|. shiftm  , xK_p), prompt (myTerm ++ " -e ") defaultXPConfig)
-     , ((modm .|. shiftm  , xK_s), spawn ("exec " ++ myTerm ++ " -e ssh smash -Y"))
+     , ((modm .|. shiftm  , xK_p), prompt (myTerm ++ " --hidemenubar -x ") defaultXPConfig)
+     , ((modm .|. shiftm  , xK_s), spawn ("exec " ++ myTerm ++ " -x ssh smash -Y"))
      , ((modm .|. shiftm  , xK_x), changeDir defaultXPConfig)
      , ((modm .|. ctlm    , xK_m), spawn ("exec midori --app=http://gmail.com"))
      , ((modm             , xK_c), promptSelection "pbcopy")  -- Copy to mac pasteboard.

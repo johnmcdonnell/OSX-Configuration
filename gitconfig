@@ -1,0 +1,13 @@
+[merge]
+	tool = vimdiff
+[user]
+	name = John McDonnell
+	email = john.v.mcdonnell@gmail.com
+[core]
+	editor = vim
+	autocrlf = input
+[github]
+	user = johnmcdonnell
+	token = 5763fe7e540550176355d4ce9f877196
+[color]
+	ui = auto

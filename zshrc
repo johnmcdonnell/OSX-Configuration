@@ -192,3 +192,4 @@ compctl -K _pip_completion pip
 export PATH="/Users/j/.cabal/bin:$PATH";
 
 export USERWM=`which xmonad`
+export BROWSER=`which midori`

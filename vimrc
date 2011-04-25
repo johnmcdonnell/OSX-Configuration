@@ -180,6 +180,7 @@ Bundle 'Command-T'
 Bundle "ack.vim"
 Bundle "git://git.wincent.com/command-t.git"
 Bundle 'Indent-Guides'
+Bundle 'The-NERD-tree'
 
 " vim-r plugin.
 let vimrplugin_conqueplugin = 0
@@ -188,3 +189,11 @@ let vimrplugin_vimpager="horizontal"
 
 " For pathogen
 call pathogen#runtime_append_all_bundles()
+
+" For conque
+let g:ConqueTerm_SendVisKey = '`'
+
+" for taglist (can't find exuberant ctags)
+let Tlist_Ctags_Cmd = '/opt/local/bin/ctags'
+
+

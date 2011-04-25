@@ -62,7 +62,7 @@ xset fp+ ~/.fonts
 xset fp rehash
 cd
 quartz-wm --only-proxy &
-source ~/.zshenv
+source ~/.zshrc
 echo PATH=/Users/j/.cabal/bin/:$PATH
 export BROWSER=midori
 

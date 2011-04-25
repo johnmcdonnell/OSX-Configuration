@@ -1,22 +1,25 @@
+#!/bin/zsh
 
-
-for file in `git ls-files`;
-do 
+# Find will avoid issues with filenames containing spaces.
+find . -not \( -name ".?*" -prune \) -type f -print0 | while read -d $'\0' file
+do
+	#file=`cut -c 3- $file`
+	file=${file#\.\/}
 	case "$file" in
 		README)
 			continue
 			;;
+		*(.png|.jpg|.db|.sh|~|.swp))
+			continue
+			;;
+		(source|config)*)
+			ofile="$HOME/$file"
+			;;
+		*)
+			ofile="$HOME/.$file"
+			;;
 	esac
-	echo "Diffing " $file
-	
-	if [[ `expr $file : "source"` -ne 0 ]];
-	then
-		diff $file ~/$file
-	elif [[ `expr $file : "config"` -ne 0 ]]; 
-	then
-		diff $file ~/$file
-	else
-		diff $file ~/.$file
-	fi
+	echo "Diffing $file with $ofile"
+	diff "$file" "$ofile"
 done
 
