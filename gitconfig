@@ -6,6 +6,7 @@
 [core]
 	editor = vim
 	autocrlf = input
+	excludesfile = /Users/j/.gitignore
 [github]
 	user = johnmcdonnell
 	token = 5763fe7e540550176355d4ce9f877196

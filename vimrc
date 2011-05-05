@@ -1,6 +1,13 @@
 
 " Based on a sample file by Bram Moolenaar <Bram@vim.org>
 
+set tabstop=8
+set expandtab
+set softtabstop=4
+set shiftwidth=4
+set autoindent
+
+
 " When started as "evim", evim.vim will already have done these settings.
 if v:progname =~? "evim"
   finish
@@ -109,6 +116,9 @@ nnoremap <F2> :set nonumber!<CR>:set foldcolumn=0<CR>
 imap \= <Esc>:grep --exclude=*~ TODO * <CR> :copen <CR>
 map \= :grep --exclude=*~ TODO * <CR> :copen <CR>
 
+" Map 'cd' alone to change directory to current path.
+map ,cd :cd %:p:h<CR>:pwd<CR>
+
 " Save folding
 au BufWinLeave *.* mkview
 au BufWinEnter *.* loadview
@@ -195,5 +205,6 @@ let g:ConqueTerm_SendVisKey = '`'
 
 " for taglist (can't find exuberant ctags)
 let Tlist_Ctags_Cmd = '/opt/local/bin/ctags'
+
 
 

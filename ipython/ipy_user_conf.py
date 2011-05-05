@@ -43,10 +43,11 @@ def main():
     #ipy_editors.scite('c:/opt/scite/scite.exe')
     #ipy_editors.komodo()
     #ipy_editors.idle()
+    #ipy_editors.mate()
     # ... or many others, try 'ipy_editors??' after import to see them
     
     # Or roll your own:
-    #ipy_editors.install_editor("c:/opt/jed +$line $file")
+    #ipy_editors.install_editor("mvim +$line $file")
     
     
     o = ip.options
@@ -62,9 +63,9 @@ def main():
     # A different, more compact set of prompts from the default ones, that
     # always show your current location in the filesystem:
 
-    #o.prompt_in1 = r'\C_LightBlue[\C_LightCyan\Y2\C_LightBlue]\C_Normal\n\C_Green|\#>'
-    #o.prompt_in2 = r'.\D: '
-    #o.prompt_out = r'[\#] '
+    o.prompt_in1 = r'\C_LightBlue[\C_LightCyan\Y2\C_LightBlue]\C_Normal\n\C_Green|\#>'
+    o.prompt_in2 = r'.\D: '
+    o.prompt_out = r'[\#] '
     
     # Try one of these color settings if you can't read the text easily
     # autoexec is a list of IPython commands to execute on startup
@@ -82,7 +83,7 @@ def main():
     #import ipy_autoreload
     
     # For winpdb support (%wdb)
-    #import ipy_winpdb
+    import ipy_winpdb
     
     # For bzr completer, requires bzrlib (the python installation of bzr)
     #ip.load('ipy_bzr')
@@ -90,15 +91,15 @@ def main():
     # Tab completer that is not quite so picky (i.e. 
     # "foo".<TAB> and str(2).<TAB> will work). Complete 
     # at your own risk!
-    #import ipy_greedycompleter
+    import ipy_greedycompleter
     
     # If you are on Linux, you may be annoyed by
     # "Display all N possibilities? (y or n)" on tab completion,
     # as well as the paging through "more". Uncomment the following
     # lines to disable that behaviour
-    #import readline
-    #readline.parse_and_bind('set completion-query-items 1000')
-    #readline.parse_and_bind('set page-completions no')
+    import readline
+    readline.parse_and_bind('set completion-query-items 1000')
+    readline.parse_and_bind('set page-completions no')
 
 
 # some config helper functions you can use 

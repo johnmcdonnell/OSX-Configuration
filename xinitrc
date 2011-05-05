@@ -14,9 +14,6 @@ if [ -f $sysresources ]; then
     else
         xrdb -nocpp -merge $sysresources
     fi
-
-
-
 fi
 
 if [ -f $sysmodmap ]; then
@@ -24,15 +21,11 @@ if [ -f $sysmodmap ]; then
 fi
 
 if [ -f "$userresources" ]; then
-
     if [ -x /usr/bin/cpp ] ; then
         xrdb -merge "$userresources"
     else
         xrdb -nocpp -merge "$userresources"
     fi
-
-
-
 fi
 
 if [ -f "$usermodmap" ]; then
@@ -80,7 +73,7 @@ export MOZ_PLUGIN_PATH="/Users/j/.config/midori/plugin"
 
 #/Users/j/bash_stuff/dzen/status.sh | dzen2 -ta r -fn '-*-profont-*-*-*-*-13-*-*-*-*-*-iso8859' -bg '#2c2c32' -fg 'grey70' -p -e '' &
 #/Users/j/bash_stuff/dzen/status.sh | dzen2 -ta r -bg '#2c2c32' -fg 'grey70' -p -e '' &
-/Users/j/.cabal/bin/xmonad
+exec /Users/j/.cabal/bin/xmonad
 #exec /opt/local/bin/ratpoison
 #/opt/local/bin/wmaker &
 #/opt/local/bin/wmii welcome &
