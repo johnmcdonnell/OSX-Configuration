@@ -28,6 +28,7 @@ bindkey -v
 # rebind deletes
 bindkey -M viins '^H' backward-delete-char
 bindkey -M viins '^?' backward-delete-char
+bindkey -a 'q' push-line # Escape out of a line for one command.
 
 # Set up directory history
 export DIRSTACKSIZE=10

@@ -10,7 +10,7 @@ do
 		*(~|\.swp))
 			continue
 			;;
-		(source|config)*)
+		source*)
 			ofile=$HOME/$file
 			;;
 		*)
