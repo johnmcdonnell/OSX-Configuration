@@ -1,0 +1,9 @@
+
+
+molokai  # background not quite black
+jellybeans # hard to even see screen split
+ir_black # hard to read unfocused window titles
+wombat256
+rdark
+
+baycomb  # sometimes light, sometimes dark?!?

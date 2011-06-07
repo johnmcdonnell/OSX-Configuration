@@ -19,4 +19,4 @@ q <- function (save="no", ...) {
 }
 
 # Andrew Gelman's plot seasoning:
-setHook( 'plot.new', function(..) par (mar=c(3,3,2,1), mgp=c(2,.7,0), tck=-.02) )
+#setHook( 'plot.new', function(..) par (mar=c(3,3,2,1), mgp=c(2,.7,0), tck=-.02) )
