@@ -74,6 +74,10 @@ setopt interactivecomments # Allows comments mid-line w/ #
 setopt rcquotes # include single quotes inline with '' 
 # sunkeyboardhack # ignores an accidental single quote at the end of the line
 
+# Grep coloring
+export GREP_OPTIONS="--colour=auto"
+
+
 #preexec () {
   #echo -ne "\ek${1%% *}\e\\"
 #}

@@ -130,3 +130,9 @@ let g:Tex_DefaultTargetFormat = 'pdf'
 
 "Spelling!
 setlocal spell spelllang=en_us
+
+
+" latex-suite options
+TexLet g:Tex_EnvironmentMaps  = 0
+TexLet g:Imap_UsePlaceHolders = 0
+

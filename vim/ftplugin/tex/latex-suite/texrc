@@ -71,10 +71,10 @@ else
 endif
 
 " whether to turn on debugging
-TexLet g:Tex_Debug = 0
+TexLet g:Tex_Debug = 1
 " If non empty, all the debugging information will be written to a file of
 " this name.
-TexLet g:Tex_DebugLog = ''
+TexLet g:Tex_DebugLog = 'vimtexlog.log'
 
 " }}}
 " ==============================================================================
@@ -144,7 +144,7 @@ if has('win32')
 elseif has('macunix')
 	" Let the system pick.  If you want, you can override the choice here.
 	TexLet g:Tex_ViewRule_ps = ''
-	TexLet g:Tex_ViewRule_pdf = ''
+	TexLet g:Tex_ViewRule_pdf = 'Skim'
 	" TexLet g:Tex_ViewRule_pdf = 'Acrobat\ Reader\ 5.1'
 	TexLet g:Tex_ViewRule_dvi = ''
 	" Set this to 1 to disable opening a viewer with 'open -a'
@@ -157,7 +157,6 @@ else
 		TexLet g:Tex_ViewRule_dvi = 'xdg-open'
 	else
 		TexLet g:Tex_ViewRule_ps = 'gv'
-		" TexLet g:Tex_ViewRule_pdf = 'xpdf'
 		TexLet g:Tex_ViewRule_pdf = 'xpdf'
 		TexLet g:Tex_ViewRule_dvi = 'xdvi'
 	endif
@@ -678,6 +677,9 @@ TexLet g:Tex_MainMenuLocation = 80
 " Default: 1 
 TexLet g:Tex_MathMenus = 1 
 
+" I'm putting this here in the hope htat it exists.
+TexLet g:Tex_ElementMenus = 0
+
 " The following options control the "compactness" of the menus. 
 "
 " Setting this option to 1 makes the Font, Counter and Dimensioning menus to
@@ -708,7 +710,7 @@ TexLet g:Tex_MenuPrefix = 'TeX-'
 " Use utf-8 menus. There is plenty of math symbols in LaTeX. It is hard to
 " remember them. You can display them with utf-8. Your system/GUI interface
 " have to support utf-8. This addition is necessary for resetting 'encoding'.
-TexLet g:Tex_UseUtfMenus = 0
+TexLet g:Tex_UseUtfMenus = 1
 
 if g:Tex_UseUtfMenus != 0 && has("gui_running")
 	set encoding=utf-8

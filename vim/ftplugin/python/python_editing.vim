@@ -1,10 +1,10 @@
 " Only do this when not done yet for this buffer
-if exists("b:did_ftplugin")
-finish
-endif
-let b:did_ftplugin = 1
+" (I think this was causing incompete folding)
+" if exists("b:did_ftplugin")
+" finish
+" endif
+" let b:did_ftplugin = 1
 
-map <buffer> <leader>e :w<CR>:!python % <CR>
 map <buffer> gd /def <C-R><C-W><CR> 
 
 set foldmethod=expr

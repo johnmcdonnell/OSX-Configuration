@@ -12,12 +12,12 @@ let g:pydiction_location="~/.vim/pydiction/complete-dict"
 filetype plugin indent on
 
 " Execute file being edited with <Shift> + e:
-map <buffer> <S-x> :w<CR>:!/Library/Frameworks/Python.framework/Versions/6.0.4/bin//python % <CR>
+map <buffer> <S-x> :w<CR>:!/Library/Frameworks/Python.framework/Versions/Current/bin//python % <CR>
 " Insert a vimpdb trace point.
 " map <buffer> \t oimport vimpdb; vimpdb.set_trace()<esc>
 " assigns trace to register t.
 let @t = "import vimpdb; vimpdb.set_trace()"
-let @d = "import ipdb; ipdb.set_trace()"
+" let @d = "import ipdb; ipdb.set_trace()"
 
 python << EOF
 import os
