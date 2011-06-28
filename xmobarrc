@@ -1,0 +1,28 @@
+
+-- Some config info: https://wiki.archlinux.org/index.php/Xmobar
+-- and here: http://projects.haskell.org/xmobar/#the-output-template
+
+
+Config {
+         font = "xft:Bitstream Vera Sans Mono:size=10"
+       , bgColor = "#3f3c6d"
+       , fgColor = "#a8a3f7"
+       , position = Top
+       , commands = [ Run Weather "KNYC" ["-t","<station>: <tempC>C Sky:<skyCondition>","-L","18","-H","25","--normal","green","--high","red","--low","cyan"] 36000
+                    --, Run Cpu ["-L","3","-H","50","--normal","green","--high","red"] 10
+                    --, Run Memory ["-t","Mem: <usedratio>%"] 10
+                    --, Run Swap [] 10
+                    --, Run Com "uname" ["-s","-r"] "" 36000
+                    --, Run TopMem ["-t", "<both1> <both2>"] 10
+                    , Run Com "uname" ["-s","-r"] "" 36000
+                    , Run Date "%a %b %_d %Y %H:%M" "date" 10
+                    , Run StdinReader
+                    ]
+       , sepChar = "%"
+       , alignSep = "}{"
+       , template = "%StdinReader% | %uname% } <fc=#ee9a00>%date%</fc> { %KNYC%"
+       }
+
+
+--oldtemplate = "%cpu% | %memory% * %swap% | %eth0% - %eth1% }{ <fc=#ee9a00>%date%</fc>| %EGPF% | %uname%"
+

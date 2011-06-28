@@ -35,17 +35,28 @@ rxvt*modifier: mod2
 urxvt*colorMode: on
 !urxvt*dynamicColors: on
 urxvt*saveLines: 10000
+
+
+URxvt*foreground: white
+URxvt*background: #111111
 urxvt*jumpScroll: true
-!urxvt*Curses: true
-!urxvt*boldMode: true
-!urxvt*colorBDMode: true
-!urxvt*colorBD: rgb:fc/fc/fc
-!urxvt*visualBell: false
-urxvt*urlLauncher: midori
+URxvt*colorBDMode: true
+URxvt*colorBD: rgb:fc/fc/fc
+URxvt*cursorColor: #99FF99
+URxvt*visualBell: false
+URxvt*urlLauncher: midori
+URxvt*scrollBar: false
+URxvt*boldMode: true
+
+URxvt*saveLines: 9999
+
+!URxvt*font: xft:Anonymous Pro
+URxvt*font: xft:Bitstream Vera Sans Mono
 
 
-urxvt*faceName: Anonymous Pro
-urxvt*faceSize: 12
+! These don't seem to work
+!URxvt*faceName: Anonymous Pro
+!URxvt*faceSize: 14
 
 !mrxvt*faceName: Anonymous Pro
 !mrxvt*faceSize: 12

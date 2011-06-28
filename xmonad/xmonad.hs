@@ -30,7 +30,7 @@ myBorderWidth = 2
 myLayout = avoidStruts $ workspaceDir "~" (spiral (6/7)) ||| Full ||| Roledex
 myWorkspaces =  map show [1..7] ++ ["8:comm", "9:web"]
 myFocusFollowsMouse = False
-myTerm = "Terminal"
+myTerm = "export COLORTERM=rxvt; urxvt"
 
 
 
@@ -42,8 +42,9 @@ foreground = "'#000000'"
 
 main :: IO ()
 main = do
-    conf <- dzen defaultConfig
-    xmonad $ conf {
+    xmonad =<< statusBar myBar myPP toggleStrutsKey myConfig
+
+myConfig = defaultConfig {
          normalBorderColor  = myNormalBorderColor
         ,focusedBorderColor = myFocusedBorderColor
         ,keys               = myKeys
@@ -56,14 +57,20 @@ main = do
         ,focusFollowsMouse  = myFocusFollowsMouse
     }
 
-myDmenuTitleBar =
-    "exec `/usr/local/bin/dmenu_path | /usr/local/bin/dmenu\
-        \ -p 'Run:'\
-        \ -i\
-        \ -nb " ++ background ++ "\
-        \ -nf " ++ foreground ++ "\
-        \ -sb " ++ selected   ++ "\
-    \`"
+myBar = "xmobar"
+
+myPP = xmobarPP { ppCurrent = xmobarColor "#429942" "" . wrap "<" ">" }
+
+toggleStrutsKey XConfig {XMonad.modMask = modMask} = (modMask, xK_b)
+
+--myDmenuTitleBar =
+--    "exec `/usr/local/bin/dmenu_path | /usr/local/bin/dmenu\
+--        \ -p 'Run:'\
+--        \ -i\
+--        \ -nb " ++ background ++ "\
+--        \ -nf " ++ foreground ++ "\
+--        \ -sb " ++ selected   ++ "\
+--    \`"
 
 
 --newKeys x = M.union (keys defaultConfig x) (M.fromList (myKeys x))
@@ -87,7 +94,6 @@ toRemove x = []
 
 
 toAdd x  = 
-     -- [ ((modm             , xK_p), spawn myDmenuTitleBar)
      [ ((modm             , xK_p), prompt ("exec") defaultXPConfig)
      , ((modm .|. shiftm  , xK_p), prompt (myTerm ++ " --hidemenubar -x ") defaultXPConfig)
      , ((modm .|. shiftm  , xK_s), spawn ("exec " ++ myTerm ++ " -x ssh smash -Y"))
