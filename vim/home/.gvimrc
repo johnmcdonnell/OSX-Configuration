@@ -1,5 +1,5 @@
 
-IndentGuidesToggle
+IndentGuidesActivate
 colorscheme jellybeans
 
 

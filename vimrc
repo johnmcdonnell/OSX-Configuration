@@ -204,7 +204,10 @@ call pathogen#runtime_append_all_bundles()
 let g:ConqueTerm_SendVisKey = '`'
 
 " for taglist (can't find exuberant ctags)
-let Tlist_Ctags_Cmd = '/opt/local/bin/ctags'
+let Tlist_Ctags_Cmd = '/usr/local/bin/ctags'
 
+" For R
+let r_syntax_folding = 1
 
+colorscheme molokai
 

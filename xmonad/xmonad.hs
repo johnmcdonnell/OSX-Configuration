@@ -12,10 +12,20 @@ import XMonad.Actions.Search (google, isohunt, wayback, wikipedia, wiktionary, i
 -- import XMonad.Prompt.RunOrRaise -- Doesn't seem to work right (sometimes freezes x11)
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.DynamicLog
+import XMonad.Hooks.UrgencyHook
 import XMonad.Layout.Spiral
 import XMonad.Layout.HintedTile
+import Data.Ratio ((%))
+import XMonad.Layout.Grid
+import XMonad.Layout.ComboP
+import XMonad.Layout.Tabbed
+import XMonad.Layout.NoBorders
+import XMonad.Layout.Named
+import XMonad.Layout.TwoPane
+import XMonad.Layout.Combo
 import XMonad.Layout.WorkspaceDir
-import XMonad.Layout.Roledex
+import XMonad.Layout.PerWorkspace
+import XMonad.Layout.WindowNavigation
 --import XMonad.Layout.MagicFocus
 import qualified XMonad.StackSet as W hiding (swapDown, swapUp)
 
@@ -23,28 +33,39 @@ import qualified Data.Map as M
 import System.Exit
 
 
-myModMask = mod1Mask               -- "command key (hopefully)"
+myModMask = mod1Mask               -- command key on OSX, option in VirtualBox
 myNormalBorderColor  = "#000000"
 myFocusedBorderColor = "#ff0000"
 myBorderWidth = 2
-myLayout = avoidStruts $ workspaceDir "~" (spiral (6/7)) ||| Full ||| Roledex
-myWorkspaces =  map show [1..7] ++ ["8:comm", "9:web"]
 myFocusFollowsMouse = False
-myTerm = "export COLORTERM=rxvt; urxvt"
+myTerm = "urxvt -tint white -sh 18"
 
+-- Workspaces
+myWorkspaces =  map show [1..7] ++ ["8:comm", "9:web"]
 
+myLayout = avoidStruts $ workspaceDir "~" (tiled) ||| (spiral (6/7)) ||| Full
+tiled = named "HintedTall" $ hintedtile XMonad.Layout.HintedTile.Tall
+  where 
+    hintedtile = HintedTile nmaster delta ratio TopLeft
+    nmaster = 1
+    ratio = toRational (2/(1+sqrt 5 :: Double))
+    delta = 0.03
 
---  colors match Ubuntu Human theme and Gnome panels
-selected   = "'#0000ff'"
-background = "'#efebe7'"
-foreground = "'#000000'"
+tabConfig = defaultTheme { inactiveBorderColor = "#FF0000"
+                         , activeTextColor     = "#00FF00"
+                         }
+
+-- myLayout = avoidStruts $ onWorkspace "9:web" browserLayout $ normalLayout
+-- browserLayout = named "Tabbed" $ windowNavigation $ combined 
+--   where
+--     combined = combineTwo (TwoPane 0.03 0.5) (tabbed shrinkText tabConfig) (Mirror tiled)
+-- normalLayout = tiled ||| (spiral (6/7)) ||| noBorders Full
 
 
 main :: IO ()
-main = do
-    xmonad =<< statusBar myBar myPP toggleStrutsKey myConfig
+main = xmonad =<< statusBar myBar myPP toggleStrutsKey myConfig
 
-myConfig = defaultConfig {
+myConfig = withUrgencyHook dzenUrgencyHook { args = ["-bg", "darkgreen", "-xs", "l"] } $ defaultConfig {
          normalBorderColor  = myNormalBorderColor
         ,focusedBorderColor = myFocusedBorderColor
         ,keys               = myKeys
@@ -62,15 +83,6 @@ myBar = "xmobar"
 myPP = xmobarPP { ppCurrent = xmobarColor "#429942" "" . wrap "<" ">" }
 
 toggleStrutsKey XConfig {XMonad.modMask = modMask} = (modMask, xK_b)
-
---myDmenuTitleBar =
---    "exec `/usr/local/bin/dmenu_path | /usr/local/bin/dmenu\
---        \ -p 'Run:'\
---        \ -i\
---        \ -nb " ++ background ++ "\
---        \ -nf " ++ foreground ++ "\
---        \ -sb " ++ selected   ++ "\
---    \`"
 
 
 --newKeys x = M.union (keys defaultConfig x) (M.fromList (myKeys x))
@@ -95,11 +107,10 @@ toRemove x = []
 
 toAdd x  = 
      [ ((modm             , xK_p), prompt ("exec") defaultXPConfig)
-     , ((modm .|. shiftm  , xK_p), prompt (myTerm ++ " --hidemenubar -x ") defaultXPConfig)
-     , ((modm .|. shiftm  , xK_s), spawn ("exec " ++ myTerm ++ " -x ssh smash -Y"))
+     , ((modm .|. shiftm  , xK_p), prompt (myTerm ++ " -e ") defaultXPConfig)
+     , ((modm .|. shiftm  , xK_s), spawn ("exec " ++ myTerm ++ " -e 'ssh smash -Y'"))
      , ((modm .|. shiftm  , xK_x), changeDir defaultXPConfig)
      , ((modm .|. ctlm    , xK_m), spawn ("exec midori --app=http://gmail.com"))
-     , ((modm             , xK_c), promptSelection "pbcopy")  -- Copy to mac pasteboard.
      , ((modm             , xK_d), promptSearch greenXPConfig wikipedia)
      , ((modm .|. shiftm  , xK_d), selectSearch wikipedia)
      , ((modm             , xK_g), promptSearch greenXPConfig (intelligent google))

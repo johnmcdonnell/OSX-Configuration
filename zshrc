@@ -8,8 +8,8 @@
 
 # shell variables
 export PROMPT="[%~]
-%h %%"
-#export RPROMPT="[%h]"
+#%h %%"
+export RPROMPT="[%h]"
 
 # set prompt to cue command mode
 # (http://zshwiki.org/home/examples/zlewidgets) 
@@ -125,12 +125,12 @@ export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 
 # neat stuff:
-
 alias ascii='less /usr/share/misc/ascii'
 
 # Colors for ls
 export CLICOLOR=1
 export LSCOLORS=ExFxCxDxBxegedabagacad
+export LS_COLORS=auto
 
 #-------------------------------------------------------------
 # tailoring 'less'
@@ -197,30 +197,4 @@ compctl -K _pip_completion pip
 export PATH="/Users/j/.cabal/bin:$PATH";
 
 export USERWM=`which xmonad`
-export BROWSER=`which midori`
-
-# oh my zsh stuff
-ZSH=$HOME/.oh-my-zsh
-
-# Set to this to use case-sensitive completion
-# export CASE_SENSITIVE="true"
-
-# Comment this out to disable weekly auto-update checks
-# export DISABLE_AUTO_UPDATE="true"
-
-# Uncomment following line if you want to disable colors in ls
-# export DISABLE_LS_COLORS="true"
-
-# Uncomment following line if you want to disable autosetting terminal title.
-# export DISABLE_AUTO_TITLE="true"
-
-# Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
-# Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(osx git macports pip svn vi-mode brew lol)
-
-# Theme
-export ZSH_THEME="bira"
-
-source $ZSH/oh-my-zsh.sh
-
-# Customize to your needs...
+export BROWSER=`which luakit`

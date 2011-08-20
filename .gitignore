@@ -1,3 +1,5 @@
 *~
 *.pyc
 *.swp
+vim/bundle/*
+vim/vimoutliner/*

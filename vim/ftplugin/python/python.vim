@@ -34,3 +34,5 @@ EOF
 
 source ~/.vim/ftplugin/python/jpythonfold.vim
 filetype detect
+
+IndentGuidesEnable

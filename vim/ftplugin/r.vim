@@ -29,7 +29,7 @@
 colorscheme desertEx
 let vimrplugin_latexcmd = "xelatex"
 
-
+vmap \ccc s/^/%/
 
 " Only do this when not yet done for this buffer
 if exists("b:did_r_ftplugin") || exists("disable_r_ftplugin")
