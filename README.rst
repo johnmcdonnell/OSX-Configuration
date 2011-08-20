@@ -1,12 +1,12 @@
 
-Configuration files for OSX
+Configuration files for Arch 
 ===========================
 
-My configuration files for a Macbook Pro on 10.6. 
+This repo is for my configuration files for a Macbook Pro on 10.6, but this
+branch is for the Arch VM I run in VirtualBox.
 
-I use a fair number of unix-y tools, so I've got a reasonably intense `vim`
-configuration going on, and I've gotten `mutt` to play reasonably nice with
-gmail. I'm also pretty happy with my `xmonad` setup.
+I use Arch with xmonad to manage windows kind of as a souped-up IDE.
+
 
 License and Disclaimer
 ======================
@@ -27,4 +27,4 @@ etc., at least something that works for one guy.
 Automated install
 -----------------
 
-I use ``./make.sh`` to install the files here. Do this at your own risk. 
+I use ``./make.sh`` to install the files here. You should probably not do that unless your cool with nuking your current config setup.
