@@ -191,6 +191,7 @@ Bundle "ack.vim"
 Bundle "git://git.wincent.com/command-t.git"
 Bundle 'Indent-Guides'
 Bundle 'The-NERD-tree'
+Bundle 'csv.vim'
 
 " vim-r plugin.
 let vimrplugin_conqueplugin = 0

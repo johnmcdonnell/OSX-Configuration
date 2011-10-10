@@ -1,6 +1,6 @@
 
-# You can use sudo mdutil -a -i off to turn off spotlight.
-# Use sudo mdutil -a -i on to turn it back on.
+# term
+export TERM='xterm-256color'
 
 #if [[ -z $STY ]]; then  # this might be dangerous.
 #	exec screen -R
@@ -143,42 +143,12 @@ export LESSOPEN='|/usr/bin/lesspipe.sh %s 2>&-'
 # Use this if lesspipe.sh exists
 export LESS='-i -N -w  -z-4 -g -e -M -X -F -R -P%t?f%f :stdin .?pb%pb\%:?lbLine %lb:?bbByte %bb:-...'
 
-# Use System frameworks (mostly for pyobjc)
-#export PYTHONPATH='/System/Library/Frameworks/Python.framework/Versions/2.6/Extras/lib/python'
-
 # Handy stuff for ipython
 export LESS="-R" # Tells less to use raw input
 export EDITOR=vim
 
-# PATH for port.
-# REQUIRES GCC!!!
-export PATH=/opt/local/bin:$PATH
-export MANPATH=/opt/local/share/man:$MANPATH
-export INFOPATH=/opt/local/share/info:$INFOPATH
-
-# Scripts folder
-export PATH=/opt/scripts:$PATH
-
-
-# Godi for OCaml
-export PATH="/opt/godi/bin:/opt/godi/sbin:$PATH";
-export MANPATH="/opt/godi/man:$MANPATH";
-
-# Mathematica
-export PATH="/Applications/Mathematica.app/Contents/MacOS/:$PATH";
-
-# Android debugger
-export PATH=/Users/j/source/android-sdk-mac/tools:$PATH
-
-# Setting PATH for /opt/python
-export PATH="/opt/python/bin:$PATH"
-export PKG_CONFIG_PATH="/opt/python/lib/pkgconfig"
-export PATH="/Library/Frameworks/Python.framework/Versions/Current/bin/:$PATH"
-export PATH="/usr/texbin:$PATH"
-
 # Make X11 defaults work.
 #xrdb -merge ~/.Xdefaults &
-
 
 # pip zsh completion start
 function _pip_completion {
@@ -192,9 +162,5 @@ function _pip_completion {
 compctl -K _pip_completion pip
 # pip zsh completion end
 
-
-# Cabal for Haskell
-export PATH="/Users/j/.cabal/bin:$PATH";
-
 export USERWM=`which xmonad`
-export BROWSER=`which luakit`
+export BROWSER=`which firefox`

@@ -7,8 +7,10 @@ import Graphics.X11.Xlib
 import XMonad.Prompt
 import XMonad.Prompt.Shell
 import XMonad.Prompt.XMonad
+import XMonad.Prompt.AppendFile
 import XMonad.Util.XSelection
 import XMonad.Actions.Search (google, isohunt, wayback, wikipedia, wiktionary, intelligent, selectSearch, promptSearch)
+import XMonad.Actions.Commands
 -- import XMonad.Prompt.RunOrRaise -- Doesn't seem to work right (sometimes freezes x11)
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.DynamicLog
@@ -38,7 +40,9 @@ myNormalBorderColor  = "#000000"
 myFocusedBorderColor = "#ff0000"
 myBorderWidth = 2
 myFocusFollowsMouse = False
-myTerm = "urxvt -tint white -sh 18"
+--myTerm = "urxvt -tint white -sh 18"
+myTerm = "gnome-terminal --hide-menubar"
+myHomedir = "/home/j/"
 
 -- Workspaces
 myWorkspaces =  map show [1..7] ++ ["8:comm", "9:web"]
@@ -104,19 +108,19 @@ toRemove x = []
 --     , (modMask .|.  shiftMask , xK_p)
 --     ]
 
-
 toAdd x  = 
      [ ((modm             , xK_p), prompt ("exec") defaultXPConfig)
+       --((modm             , xK_p), runOrRaisePrompt defaultXPConfig)
      , ((modm .|. shiftm  , xK_p), prompt (myTerm ++ " -e ") defaultXPConfig)
-     , ((modm .|. shiftm  , xK_s), spawn ("exec " ++ myTerm ++ " -e 'ssh smash -Y'"))
+     --, ((modm             , xK_x), xmonadPrompt defaultXPConfig)
      , ((modm .|. shiftm  , xK_x), changeDir defaultXPConfig)
-     , ((modm .|. ctlm    , xK_m), spawn ("exec midori --app=http://gmail.com"))
+     , ((modm .|. ctlm    , xK_n), appendFilePrompt defaultXPConfig $ myHomedir ++ ".notes/xmonad.txt")
      , ((modm             , xK_d), promptSearch greenXPConfig wikipedia)
      , ((modm .|. shiftm  , xK_d), selectSearch wikipedia)
      , ((modm             , xK_g), promptSearch greenXPConfig (intelligent google))
      , ((modm .|. shiftm  , xK_g), selectSearch (intelligent google))
-     -- , ((modm             , xK_m), windows W.swapMaster)
      , ((modm             , xK_q), restart "xmonad" True)
      , ((modm .|. ctlm    , xK_q), io (exitWith ExitSuccess))
+     , ((modm             , xK_x), spawn "xrandr --output VBOX0 --auto")
      ]
 
