@@ -179,7 +179,6 @@ hi DiffAdd      ctermfg=0 ctermbg=2 guibg='green'
 hi DiffDelete   ctermfg=0 ctermbg=1 guibg='red'
 hi DiffChange   ctermfg=0 ctermbg=3 guibg='yellow' 
 
-<<<<<<< HEAD
 " Vundle stuff:
 set rtp+=~/.vim/vundle.git/ 
 call vundle#rc()
