@@ -23,7 +23,7 @@ do
 			continue
 			;;
 		*)
-			ginstall -p -D -m 440 $file $ofile
+			install -p -D -m 440 $file $ofile
 			;;
 	esac
 done

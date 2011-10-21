@@ -35,13 +35,13 @@ import qualified Data.Map as M
 import System.Exit
 
 
-myModMask = mod1Mask               -- command key on OSX, option in VirtualBox
+myModMask = mod4Mask
 myNormalBorderColor  = "#000000"
 myFocusedBorderColor = "#ff0000"
 myBorderWidth = 2
 myFocusFollowsMouse = False
---myTerm = "urxvt -tint white -sh 18"
-myTerm = "gnome-terminal --hide-menubar"
+myTerm = "urxvt -tint white -sh 18"
+-- myTerm = "gnome-terminal --hide-menubar"
 myHomedir = "/home/j/"
 
 -- Workspaces
