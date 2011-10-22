@@ -157,8 +157,8 @@ let g:tex_flavor='latex'
 autocmd FileType python set omnifunc=pysmell#Complete
 
 " For vimrplugin
-" let vimrplugin_term = "urxvt"  " By default probably uses aterm.
-let vimrplugin_term = "gnome-terminal"  " By default probably uses aterm.
+let vimrplugin_term = "urxvt"  " By default probably uses aterm.
+" let vimrplugin_term = "gnome-terminal"  " By default probably uses aterm.
 " let vimrplugin_term_cmd = "urxvt -tint white -sh 18"  " By default probably uses aterm.
 let vimrplugin_underscore = 1  " _  == <-
 
@@ -172,33 +172,13 @@ let g:ScreenImpl = 'Tmux'
 let g:vimrplugin_tmux = 1
 let vimrplugin_vimpager="horizontal"
 
+let r_syntax_folding = 1
 
 " For svndiff
 let g:svndiff_autoupdate=1
 hi DiffAdd      ctermfg=0 ctermbg=2 guibg='green'
 hi DiffDelete   ctermfg=0 ctermbg=1 guibg='red'
 hi DiffChange   ctermfg=0 ctermbg=3 guibg='yellow' 
-
-" Vundle stuff:
-set rtp+=~/.vim/vundle.git/ 
-call vundle#rc()
-
-" Bundles:
-Bundle "L9"
-Bundle "Vundle"
-Bundle "FuzzyFinder"
-Bundle "EasyMotion"
-Bundle 'Command-T'
-Bundle "ack.vim"
-Bundle "git://git.wincent.com/command-t.git"
-Bundle 'Indent-Guides'
-Bundle 'The-NERD-tree'
-Bundle 'csv.vim'
-
-" vim-r plugin.
-let vimrplugin_conqueplugin = 0
-let vimrplugin_vimpager="horizontal"
-
 
 " For FuzzyFinder
 nmap ,f :FufFileWithCurrentBufferDir<CR>
@@ -209,11 +189,11 @@ nmap ,c :FufChangeList<CR>
 " For conque
 let g:ConqueTerm_SendVisKey = '`'
 
-" for taglist (can't find exuberant ctags)
-let Tlist_Ctags_Cmd = '/usr/local/bin/ctags'
+" For notes
+let g:notes_directory = '~/Notes'
 
-" For R
-let r_syntax_folding = 1
+" for taglist (can't find exuberant ctags)
+" let Tlist_Ctags_Cmd = '/usr/bin/ctags'
 
 colorscheme molokai
 
