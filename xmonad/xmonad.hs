@@ -15,6 +15,8 @@ import XMonad.Util.WindowProperties
 import qualified XMonad.StackSet as S
 import XMonad.Actions.Search (google, isohunt, wayback, wikipedia, wiktionary, intelligent, selectSearch, promptSearch)
 import XMonad.Actions.Commands
+import XMonad.Actions.CycleWS
+import XMonad.Actions.PhysicalScreens
 -- import XMonad.Prompt.RunOrRaise -- Doesn't seem to work right (sometimes freezes x11)
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.DynamicLog
@@ -119,10 +121,10 @@ shiftm = shiftMask
 ctlm   = controlMask
 
 -- remove some of the default key bindings
-toRemove x = []
---     [ (modMask x              , xK_p  )
---     , (modMask .|.  shiftMask , xK_p)
---     ]
+toRemove x = 
+     [ --(modMask x              , xK_p  )
+       (modm .|. shiftm  , xK_q)   -- This is a little bit too easy to do accidentally.
+     ]
 
 toAdd x  = 
      [ ((modm             , xK_p), prompt ("exec") defaultXPConfig)
@@ -136,16 +138,30 @@ toAdd x  =
      , ((modm             , xK_g), promptSearch greenXPConfig (intelligent google))
      , ((modm .|. shiftm  , xK_g), selectSearch (intelligent google))
      , ((modm             , xK_q), restart "xmonad" True)
-     , ((modm .|. ctlm    , xK_q), io (exitWith ExitSuccess))
-     , ((modm             , xK_x), spawn "xrandr --output VBOX0 --auto")
-     ]
+     , ((modm .|. ctlm    , xK_q), do
+            spawn "kill $GNOME_KERYING_PID" 
+            io (exitWith ExitSuccess)
+            )
+     , ((modm .|. shiftm  , xK_q), spawn "slock")
+     , ((modm             , xK_z), toggleWS) -- from cycleWS
+     -- , ((modm .|. shiftm  , xK_h), prevWS) -- from cycleWS
+     -- , ((modm .|. shiftm  , xK_l), nextWS) -- from cycleWS
+     ] ++ physicalScreenRemaps
 
 
+physicalScreenRemaps = [((modm .|. mask, key), f sc)
+     | (key, sc) <- zip [xK_w, xK_e, xK_r] [1,0,2]
+     , (f, mask) <- [(viewScreen, 0), (sendToScreen, shiftMask)]]
 
+
+imManageHooks = composeAll [isIM --> moveToIM] where
+    isIM     = foldr1 (<||>) [isPidgin, isSkype]
+    isPidgin = className =? "Pidgin"
+    isSkype  = className =? "Skype"
+    moveToIM = doF $ S.shift "chat"
  
 -- modified version of XMonad.Layout.IM --
--- FROM
--- http://www.haskell.org/haskellwiki/Xmonad/Config_archive/Thomas_ten_Cate%27s_xmonad.hs
+-- FROM http://www.haskell.org/haskellwiki/Xmonad/Config_archive/Thomas_ten_Cate%27s_xmonad.hs
  
 -- | Data type for LayoutModifier which converts given layout to IM-layout
 -- (with dedicated space for the roster and original layout for chat windows)
