@@ -178,19 +178,7 @@ hi DiffDelete   ctermfg=0 ctermbg=1 guibg='red'
 hi DiffChange   ctermfg=0 ctermbg=3 guibg='yellow' 
 
 " Vundle stuff:
-set rtp+=~/.vim/vundle.git/ 
-call vundle#rc()
-
-" Bundles:
-Bundle "L9"
-Bundle "Vundle"
-Bundle "FuzzyFinder"
-Bundle "EasyMotion"
-Bundle 'Command-T'
-Bundle "ack.vim"
-Bundle "git://git.wincent.com/command-t.git"
-Bundle 'Indent-Guides'
-Bundle 'The-NERD-tree'
+source ~/.vim/bundles.vim
 
 " vim-r plugin.
 let vimrplugin_conqueplugin = 0
@@ -198,7 +186,7 @@ let vimrplugin_vimpager="horizontal"
 
 
 " For pathogen
-call pathogen#runtime_append_all_bundles()
+"call pathogen#runtime_append_all_bundles()
 
 " For conque
 let g:ConqueTerm_SendVisKey = '`'

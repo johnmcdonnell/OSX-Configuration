@@ -1,5 +1,10 @@
 [merge]
-	tool = vimdiff
+    tool = threesome
+
+[mergetool "threesome"]
+    cmd = "mvim -f $BASE $LOCAL $REMOTE $MERGED -c 'ThreesomeInit'"
+    trustExitCode = true
+
 [user]
 	name = John McDonnell
 	email = john.v.mcdonnell@gmail.com
