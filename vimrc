@@ -1,5 +1,11 @@
+" This must be first, because it changes other options as a side effect.
+set nocompatible
 
-" Based on a sample file by Bram Moolenaar <Bram@vim.org>
+filetype off
+
+source ~/.vim/bundles.vim
+
+filetype plugin indent on
 
 set tabstop=8
 set expandtab
@@ -7,17 +13,7 @@ set softtabstop=4
 set shiftwidth=4
 set autoindent
 
-
-" When started as "evim", evim.vim will already have done these settings.
-if v:progname =~? "evim"
-  finish
-endif
-
 " autocmd VimResized * wincmd =
-
-" Use Vim settings, rather then Vi settings (much better!).
-" This must be first, because it changes other options as a side effect.
-set nocompatible
 
 " allow backspacing over everything in insert mode
 set backspace=indent,eol,start
@@ -71,7 +67,6 @@ if has("autocmd")
   " Use the default filetype settings, so that mail gets 'tw' set to 72,
   " 'cindent' is on in C files, etc.
   " Also load indent files, to automatically do language-dependent indenting.
-  filetype plugin indent on
 
   " Put these in an autocmd group, so that we can delete them easily.
   augroup vimrcEx
@@ -126,6 +121,7 @@ au BufWinEnter *.* loadview
 " Auto-load this file on save:
 au BufLeave ~/.vimrc :source ~/.vimrc
 
+
 " Latex Stuff.
 
 " REQUIRED. This makes vim invoke Latex-Suite when you open a tex file.
@@ -135,9 +131,6 @@ au BufLeave ~/.vimrc :source ~/.vimrc
 " search in a singe file. This will confuse Latex-Suite. Set your grep
 " program to always generate a file-name.
 set grepprg=grep\ -nH\ $*
-
-" OPTIONAL: This enables automatic indentation as you type.
-filetype indent on
 
 " Turn on Wildmenu (wild!)
 set wildmenu 
@@ -161,15 +154,25 @@ let g:miniBufExplModSelTarget = 1
 " 'plaintex' instead of 'tex', which results in vim-latex not being loaded.
 " The following changes the default filetype back to 'tex':
 let g:tex_flavor='latex'
-if v:progname =~? "mvim"
-  let vimrplugin_term_cmd = "/Applications/Utilities/iTerm.app/Contents/MacOS/iTerm -t R"
-endif
-
 autocmd FileType python set omnifunc=pysmell#Complete
 
 " For vimrplugin
-let vimrplugin_term = "xterm"  " By default probably uses aterm.
-let vimrplugin_underscore = 1  " _  == <-
+" let vimrplugin_term = "urxvt"  " By default probably uses aterm.
+" let vimrplugin_term = "gnome-terminal"  " By default probably uses aterm.
+" let vimrplugin_term_cmd = "urxvt -tint white -sh 18"  " By default probably uses aterm.
+let vimrplugin_underscore = 1  " _  generates <-, __ generates _
+
+"if v:progname =~? "mvim"
+  " let vimrplugin_term_cmd = "/Applications/Utilities/iTerm.app/Contents/MacOS/iTerm -t R"
+  " let vimrplugin_term_cmd = "/Applications/Utilities/Terminal.app/Contents/MacOS/terminal -t R"
+"endif
+let vimrplugin_conqueplugin = 0
+" Trying very hard to use tmux:
+let vimrplugin_tmux = 1
+let g:ScreenImpl = 'Tmux'
+let g:vimrplugin_tmux = 1
+let vimrplugin_vimpager="horizontal"
+
 
 " For svndiff
 let g:svndiff_autoupdate=1
@@ -183,16 +186,22 @@ source ~/.vim/bundles.vim
 " vim-r plugin.
 let vimrplugin_conqueplugin = 0
 let vimrplugin_vimpager="horizontal"
-
+let r_syntax_folding = 1
 
 " For pathogen
 "call pathogen#runtime_append_all_bundles()
+
+" For FuzzyFinder
+nmap ,f :FufFileWithCurrentBufferDir<CR>
+nmap ,b :FufBuffer<CR>
+nmap ,t :FufTaggedFile<CR>  " Not sure how to get tags for non-c++ things
+nmap ,c :FufChangeList<CR>
 
 " For conque
 let g:ConqueTerm_SendVisKey = '`'
 
 " for taglist (can't find exuberant ctags)
-let Tlist_Ctags_Cmd = '/opt/local/bin/ctags'
+let Tlist_Ctags_Cmd = '/usr/local/bin/ctags'
 
-
+colorscheme molokai
 
