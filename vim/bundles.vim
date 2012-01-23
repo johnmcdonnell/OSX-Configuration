@@ -11,21 +11,24 @@ call vundle#rc()
 
 " Bundles:
 Bundle 'gmarik/vundle'
-Bundle "FuzzyFinder"
-Bundle "EasyMotion"
+Bundle 'FuzzyFinder'
+Bundle 'EasyMotion'
+Bundle 'majutsushi/tagbar'
 Bundle 'Indent-Guides'
 Bundle 'The-NERD-tree'
 Bundle 'csv.vim'
 Bundle 'Screen-vim---gnu-screentmux'
 Bundle 'Vim-R-plugin'
 Bundle 'fugitive.vim'
-Bundle 'commentary'
+Bundle 'tpope/vim-commentary'
 Bundle 'xolox/vim-notes'
-Bundle 'taglist-plus'
-Bundle 'Conque-Shell'
-Bundle 'filebrowser'
+" Bundle 'taglist-plus'
+Bundle 'rson/vim-conque'
+Bundle 'sjl/gundo'
+Bundle 'joestelmach/javaScriptLint.vim'
+Bundle 'Syntastic'
+Bundle 'Lokaltog/vim-powerline'
 " screen.vim
-Bundle 'SyntaxFolds'
 
 filetype plugin indent on
 

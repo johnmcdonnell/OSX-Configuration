@@ -1,12 +1,26 @@
 
 
-!clear Mod1
-!add Mod1 = Meta_L Meta_R
+clear Mod1 
+clear Mod2
+keycode 64 = Meta_L
+keycode 108 = Alt_R
+!keycode 133 = Super_L
+!keycode 134 = Super_R
+add Mod1 = Meta_L
+!add Mod2 = Alt_R
+
+add Mod3 = Num_Lock
+
 !clear Mod2
+!keycode 133 = Super_L
+!keycode 134 = Super_R
+!add Mod1 = Alt_L Alt_R
 !add Mod2 = Super_L Super_R
 
-remove Lock = Caps_Lock
+clear Lock
+keycode 66 = Escape
+!keysym Caps_Lock = Escape
+!keycode 191 = Insert NoSymbol Insert ! For the mac keyboard.
 !keysym Escape = Caps_Lock  ! I'm not quite ready for this yet.
-keysym Caps_Lock = Escape
 !add Lock = Caps_Lock 
-pointer = 1 3 2 4 5 6 7
+pointer = 1 2 3 5 4 7 6 8 9 10 11 12

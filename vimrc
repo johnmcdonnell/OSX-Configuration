@@ -157,20 +157,14 @@ let g:tex_flavor='latex'
 autocmd FileType python set omnifunc=pysmell#Complete
 
 " For vimrplugin
-let vimrplugin_term = "urxvt"  " By default probably uses aterm.
-" let vimrplugin_term = "gnome-terminal"  " By default probably uses aterm.
+let vimrplugin_term = "urxvt"
+" let vimrplugin_term = "gnome-terminal"
 " let vimrplugin_term_cmd = "urxvt -tint white -sh 18"  " By default probably uses aterm.
 let vimrplugin_underscore = 1  " _  == <-
-
-if v:progname =~? "mvim"
-  let vimrplugin_term_cmd = "/Applications/Utilities/iTerm.app/Contents/MacOS/iTerm -t R"
-endif
+let vimrplugin_screenplugin = 0
 let vimrplugin_conqueplugin = 0
-" Trying very hard to use tmux:
-let vimrplugin_tmux = 1
-let g:ScreenImpl = 'Tmux'
-let g:vimrplugin_tmux = 1
-let vimrplugin_vimpager="horizontal"
+" let vimrplugin_vimpager="horizontal"
+let vimrplugin_by_vim_instance = 1
 
 let r_syntax_folding = 1
 
@@ -192,8 +186,21 @@ let g:ConqueTerm_SendVisKey = '`'
 " For notes
 let g:notes_directory = '~/Notes'
 
-" for taglist (can't find exuberant ctags)
-" let Tlist_Ctags_Cmd = '/usr/bin/ctags'
+" for tagbar
+let g:tagbar_autoclose = 1
+let g:tagbar_autofocus = 1
+let g:tagbar_autoshowtag = 1
+
+
+" For indent guides.
+let g:indent_guides_guide_size = 1
 
 colorscheme molokai
 
+" For powerline
+set laststatus=2
+
+" For syntastic
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
