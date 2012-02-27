@@ -11,6 +11,7 @@ call vundle#rc()
 
 " Bundles:
 Bundle 'gmarik/vundle'
+Bundle 'LaTeX-Suite-aka-Vim-LaTeX'
 Bundle 'FuzzyFinder'
 Bundle 'EasyMotion'
 Bundle 'majutsushi/tagbar'
@@ -28,6 +29,8 @@ Bundle 'sjl/gundo'
 Bundle 'joestelmach/javaScriptLint.vim'
 Bundle 'Syntastic'
 Bundle 'Lokaltog/vim-powerline'
+Bundle 'ehamberg/vim-cute-python'     " nifty up Python code
+Bundle 'Twinside/vim-haskellConceal'  " nifty up Haskell code
 " screen.vim
 
 filetype plugin indent on
