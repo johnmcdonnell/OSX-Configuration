@@ -2,6 +2,7 @@
 module Main (main) where
 
 import Control.Monad
+import Control.Monad.Fix
 
 import XMonad
 -- import System.Exit
@@ -10,14 +11,17 @@ import XMonad.Prompt
 import XMonad.Prompt.Shell
 import XMonad.Prompt.XMonad
 import XMonad.Prompt.AppendFile
+import XMonad.Prompt.Workspace
 import XMonad.Util.XSelection
 import XMonad.Util.WindowProperties
-import qualified XMonad.StackSet as S
-import XMonad.Actions.Search (google, isohunt, wayback, wikipedia, wiktionary, intelligent, selectSearch, promptSearch)
+--import XMonad.Actions.Search (google, isohunt, wayback, wikipedia, wiktionary, intelligent, selectSearch, promptSearch)
+import XMonad.Actions.TopicSpace
+import XMonad.Actions.GridSelect
 import XMonad.Actions.Commands
 import XMonad.Actions.CycleWS
 import XMonad.Actions.PhysicalScreens
 -- import XMonad.Prompt.RunOrRaise -- Doesn't seem to work right (sometimes freezes x11)
+import XMonad.ManageHook
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.UrgencyHook
@@ -36,7 +40,8 @@ import XMonad.Layout.PerWorkspace
 import XMonad.Layout.WindowNavigation
 import XMonad.Layout.LayoutModifier
 --import XMonad.Layout.MagicFocus
-import qualified XMonad.StackSet as W hiding (swapDown, swapUp)
+
+import qualified XMonad.StackSet as W
 
 import qualified Data.Map as M
 import System.Exit
@@ -47,12 +52,72 @@ myNormalBorderColor  = "#000000"
 myFocusedBorderColor = "#ff0000"
 myBorderWidth = 2
 myFocusFollowsMouse = False
+myXPConfig = defaultXPConfig { font="-*-lucida-medium-r-*-*-14-*-*-*-*-*-*", height=22 }
 myTerm = "urxvt -tint white -sh 18"
 -- myTerm = "gnome-terminal --hide-menubar"
+myShell = "zsh"
 myHomedir = "/home/j/"
+browserCmd = "firefox"
+pdfViewer = "mupdf"
+
+-- TODO: set this up.
+--myLogHook = dynamicLogWithPP (myPrettyPrinter dbus)
+
+--  Trying this topic thing out:
+myTopics :: [Topic]
+myTopics = 
+    [ "dash"
+    , "ws1", "ws2", "ws3", "irc", "talk", "admin", "xmonad", "pdf", "music", "web" ]
+
+myTopicConfig :: TopicConfig
+myTopicConfig =  defaultTopicConfig
+    { topicDirs = M.fromList $
+        [ ("admin",  "/etc")
+        , ("xmonad",  myHomedir ++ ".xmonad")
+        , ("admin",  "/etc")
+        , ("pdf",  "/Documents")
+        ]
+    , defaultTopicAction = const $ spawnShell >*> 1
+    , defaultTopic = "dashboard"
+    , topicActions = M.fromList $ 
+    [ ("admin", spawnCustomShell "su")
+    , ("music",  openGoogleMusic >>
+                spawn "spotify" >>
+                spawn "gnome-alsamixer")
+    , ("talk", spawn "pidgin")
+    , ("irc", spawn "xchat")
+    , ("web", spawn "firefox -browser")
+    , ("xmonad", spawn "gvim /home/mcdon/.xmonad/xmonad.hs")
+    --, ("vimrc", spawn "gvim /home/mcdon/.vimrc /home/mcdon/.vim")
+    , ("pdf", spawn pdfViewer)
+    ]
+    }
+
+openGoogleMusic = spawn  "firefox -new-window 'http://music.google.com'"
+
+spawnCustomShell :: String -> X ()
+spawnCustomShell shellname = currentTopicDir myTopicConfig  >>=  (spawnIn shellname)
+    
+spawnShell :: X ()
+spawnShell =  currentTopicDir myTopicConfig  >>=  spawnShellIn
+
+spawnShellIn :: Dir ->  X ()
+spawnShellIn dir = spawnIn myShell dir
+
+spawnIn :: String -> Dir -> X ()
+spawnIn shellname dir = spawn $ myTerm ++ " '(cd ''" ++ dir ++ "'' && " ++ shellname ++ " )'"
+
+goto :: Topic -> X ()
+goto = switchTopic myTopicConfig
+
+promptedGoto :: X ()
+promptedGoto = workspacePrompt myXPConfig goto
+
+promptedShift :: X ()
+promptedShift = workspacePrompt myXPConfig $ windows . W.shift
 
 -- Workspaces
-myWorkspaces =  map show [1..7] ++ ["chat", "9:web"]
+myWorkspaces =  map show [1..7] ++ ["8:chat", "9:web"]
 
 
 myLayout  = imLayout $ mainLayout
@@ -66,7 +131,7 @@ imLayout = onWorkspace "chat" $ avoidStruts $ withIMs ratio rosters chatLayout w
     skypeRoster     = (ClassName "Skype") `And` (Not (Title "Options")) `And` (Not (Role "Chats")) `And` (Not (Role "CallWindowForm"))
 
 
-mainLayout = avoidStruts $ workspaceDir "~" (tiled) ||| (spiral 1.618) ||| Full
+mainLayout = avoidStruts $ workspaceDir "~" (tiled) ||| (spiral (toRational (2/(1+sqrt 5 :: Double)))) ||| Full
 tiled = named "HintedTall" $ hintedtile XMonad.Layout.HintedTile.Tall
   where 
     hintedtile = HintedTile nmaster delta ratio TopLeft
@@ -83,28 +148,58 @@ tabConfig = defaultTheme { inactiveBorderColor = "#FF0000"
 --     combined = combineTwo (TwoPane 0.03 0.5) (tabbed shrinkText tabConfig) (Mirror tiled)
 -- normalLayout = tiled ||| (spiral (6/7)) ||| noBorders Full
 
+-- | This is for gridselect
+gsConfig = defaultGSConfig { gs_navigate = fix $ \self ->
+    let navKeyMap = M.mapKeys ((,) 0) $ M.fromList $
+                [(xK_Escape, cancel)
+                ,(xK_Return, select)
+                ,(xK_slash , substringSearch self)]
+           ++
+            map (\(k,a) -> (k,a >> self))
+                [(xK_Left  , move (-1,0 ))
+                ,(xK_h     , move (-1,0 ))
+                ,(xK_n     , move (-1,0 ))
+                ,(xK_Right , move (1,0  ))
+                ,(xK_l     , move (1,0  ))
+                ,(xK_i     , move (1,0  ))
+                ,(xK_Down  , move (0,1  ))
+                ,(xK_j     , move (0,1  ))
+                ,(xK_e     , move (0,1  ))
+                ,(xK_Up    , move (0,-1 ))
+                ,(xK_u     , move (0,-1 ))
+                ,(xK_y     , move (-1,-1))
+                ,(xK_m     , move (1,-1 ))
+                ,(xK_space , setPos (0,0))
+                ]
+    in makeXEventhandler $ shadowWithKeymap navKeyMap (const self) }
+
+--main = xmonad =<< statusBar myBar myPP toggleStrutsKey myConfig -- todo: restore
+-- main = xmonad =<< (statusBar myBar myPP toggleStrutsKey myConfig)
 
 main :: IO ()
-main = xmonad =<< statusBar myBar myPP toggleStrutsKey myConfig
+main = do
+    checkTopicConfig myTopics myTopicConfig
+    let urgency = withUrgencyHook dzenUrgencyHook { args = ["-bg", "darkgreen", "-xs", "l"] }
+    -- Todo: put this back:
+    --withUrgencyHook dzenUrgencyHook { args = ["-bg", "darkgreen", "-xs", "l"] } $ 
+    xmonad =<< statusBar myBar myPP toggleStrutsKey myConfig
 
-myConfig = withUrgencyHook dzenUrgencyHook { args = ["-bg", "darkgreen", "-xs", "l"] } $ defaultConfig {
+myBar = "xmobar"
+myPP = xmobarPP { ppCurrent = xmobarColor "#429942" "" . wrap "<" ">" }
+toggleStrutsKey XConfig {XMonad.modMask = modMask} = (modMask, xK_b)
+myConfig = defaultConfig {
          normalBorderColor  = myNormalBorderColor
         ,focusedBorderColor = myFocusedBorderColor
         ,keys               = myKeys
         ,modMask            = myModMask
         ,borderWidth        = myBorderWidth
         ,terminal           = myTerm
-        ,XMonad.workspaces  = myWorkspaces
+        --,XMonad.workspaces  = myWorkspaces
+        ,workspaces         = myTopics
         ,layoutHook         = myLayout
         -- ,handleEventHook    = promoteWarp  # used with magic focus.
         ,focusFollowsMouse  = myFocusFollowsMouse
     }
-
-myBar = "xmobar"
-
-myPP = xmobarPP { ppCurrent = xmobarColor "#429942" "" . wrap "<" ">" }
-
-toggleStrutsKey XConfig {XMonad.modMask = modMask} = (modMask, xK_b)
 
 
 --newKeys x = M.union (keys defaultConfig x) (M.fromList (myKeys x))
@@ -131,18 +226,26 @@ toAdd x  =
        --((modm             , xK_p), runOrRaisePrompt defaultXPConfig)
      , ((modm .|. shiftm  , xK_p), prompt (myTerm ++ " -e ") defaultXPConfig)
      --, ((modm             , xK_x), xmonadPrompt defaultXPConfig)
+     -- Topics keymaps:
+     , ((modm             , xK_n), spawnShell)
+     , ((modm             , xK_a), currentTopicAction myTopicConfig)
+     , ((modm             , xK_s), goToSelected defaultGSConfig)
+     , ((modm             , xK_g), promptedGoto)
+     , ((modm .|. shiftm  , xK_g), promptedShift)
+     , ((modm             , xK_Tab), switchNthLastFocused myTopicConfig . succ . length . W.visible . windowset =<< get)
+     
      , ((modm .|. shiftm  , xK_x), changeDir defaultXPConfig)
      , ((modm .|. ctlm    , xK_n), appendFilePrompt defaultXPConfig $ myHomedir ++ ".notes/xmonad.txt")
-     , ((modm             , xK_d), promptSearch greenXPConfig wikipedia)
-     , ((modm .|. shiftm  , xK_d), selectSearch wikipedia)
-     , ((modm             , xK_g), promptSearch greenXPConfig (intelligent google))
-     , ((modm .|. shiftm  , xK_g), selectSearch (intelligent google))
+     --, ((modm             , xK_d), promptSearch greenXPConfig wikipedia)
+     --, ((modm .|. shiftm  , xK_d), selectSearch wikipedia)
+     --, ((modm             , xK_g), promptSearch greenXPConfig (intelligent google))
+     --, ((modm .|. shiftm  , xK_g), selectSearch (intelligent google))
      , ((modm             , xK_q), restart "xmonad" True)
      , ((modm .|. ctlm    , xK_q), do
             spawn "kill $GNOME_KERYING_PID" 
             io (exitWith ExitSuccess)
             )
-     , ((modm .|. shiftm  , xK_q), spawn "slock")
+     , ((modm .|. shiftm  , xK_q), spawn "/opt/scripts/gothefucktosleep")
      , ((modm             , xK_z), toggleWS) -- from cycleWS
      -- , ((modm .|. shiftm  , xK_h), prevWS) -- from cycleWS
      -- , ((modm .|. shiftm  , xK_l), nextWS) -- from cycleWS
@@ -154,11 +257,12 @@ physicalScreenRemaps = [((modm .|. mask, key), f sc)
      , (f, mask) <- [(viewScreen, 0), (sendToScreen, shiftMask)]]
 
 
+-- TODO: hook this up.
 imManageHooks = composeAll [isIM --> moveToIM] where
     isIM     = foldr1 (<||>) [isPidgin, isSkype]
     isPidgin = className =? "Pidgin"
     isSkype  = className =? "Skype"
-    moveToIM = doF $ S.shift "chat"
+    moveToIM = doF $ W.shift "8:chat"
  
 -- modified version of XMonad.Layout.IM --
 -- FROM http://www.haskell.org/haskellwiki/Xmonad/Config_archive/Thomas_ten_Cate%27s_xmonad.hs
@@ -191,16 +295,16 @@ hasAnyProperty (p:ps) w = do
 applyIMs :: (LayoutClass l Window) =>
                Rational
             -> [Property]
-            -> S.Workspace WorkspaceId (l Window) Window
+            -> W.Workspace WorkspaceId (l Window) Window
             -> Rectangle
             -> X ([(Window, Rectangle)], Maybe (l Window))
 applyIMs ratio props wksp rect = do
-    let stack = S.stack wksp
-    let ws = S.integrate' $ stack
+    let stack = W.stack wksp
+    let ws = W.integrate' $ stack
     rosters <- filterM (hasAnyProperty props) ws
     let n = fromIntegral $ length rosters
     let (rostersRect, chatsRect) = splitHorizontallyBy (n * ratio) rect
     let rosterRects = splitHorizontally n rostersRect
-    let filteredStack = stack >>= S.filter (`notElem` rosters)
-    (a,b) <- runLayout (wksp {S.stack = filteredStack}) chatsRect
+    let filteredStack = stack >>= W.filter (`notElem` rosters)
+    (a,b) <- runLayout (wksp {W.stack = filteredStack}) chatsRect
     return (zip rosters rosterRects ++ a, b)
