@@ -53,7 +53,7 @@ myFocusedBorderColor = "#ff0000"
 myBorderWidth = 2
 myFocusFollowsMouse = False
 myXPConfig = defaultXPConfig { font="-*-lucida-medium-r-*-*-14-*-*-*-*-*-*", height=22 }
-myTerm = "urxvt -tint white -sh 18"
+myTerm = "urxvt -tint white -sh 18 "
 -- myTerm = "gnome-terminal --hide-menubar"
 myShell = "zsh"
 myHomedir = "/home/j/"
@@ -67,26 +67,27 @@ pdfViewer = "mupdf"
 myTopics :: [Topic]
 myTopics = 
     [ "dash"
-    , "ws1", "ws2", "ws3", "irc", "talk", "admin", "xmonad", "pdf", "music", "web" ]
+    , "ws1", "ws2", "ws3", "irc", "chat", "admin", "xmonad", "pdf", "mendeley", "skype", "music", "web" ]
 
 myTopicConfig :: TopicConfig
 myTopicConfig =  defaultTopicConfig
     { topicDirs = M.fromList $
         [ ("admin",  "/etc")
         , ("xmonad",  myHomedir ++ ".xmonad")
-        , ("admin",  "/etc")
         , ("pdf",  "/Documents")
         ]
     , defaultTopicAction = const $ spawnShell >*> 1
-    , defaultTopic = "dashboard"
+    , defaultTopic = "dash"
     , topicActions = M.fromList $ 
-    [ ("admin", spawnCustomShell "su")
+    [ ("admin", runInTerm "su")
     , ("music",  openGoogleMusic >>
                 spawn "spotify" >>
-                spawn "gnome-alsamixer")
-    , ("talk", spawn "pidgin")
-    , ("irc", spawn "xchat")
+                spawn "gnome-alsamixer") -- TODO: set up civilized sound controls.
+    , ("chat", spawn "pidgin" >>
+               spawn "xchat")
     , ("web", spawn "firefox -browser")
+    , ("mendeley", spawn "mendeleydesktop")
+    , ("mendeley", spawn "skype")
     , ("xmonad", spawn "gvim /home/mcdon/.xmonad/xmonad.hs")
     --, ("vimrc", spawn "gvim /home/mcdon/.vimrc /home/mcdon/.vim")
     , ("pdf", spawn pdfViewer)
@@ -95,8 +96,9 @@ myTopicConfig =  defaultTopicConfig
 
 openGoogleMusic = spawn  "firefox -new-window 'http://music.google.com'"
 
-spawnCustomShell :: String -> X ()
-spawnCustomShell shellname = currentTopicDir myTopicConfig  >>=  (spawnIn shellname)
+-- | Functions for running things in shells
+runInTerm :: String -> X ()
+runInTerm shellname = currentTopicDir myTopicConfig  >>=  (spawnIn shellname)
     
 spawnShell :: X ()
 spawnShell =  currentTopicDir myTopicConfig  >>=  spawnShellIn
@@ -105,8 +107,9 @@ spawnShellIn :: Dir ->  X ()
 spawnShellIn dir = spawnIn myShell dir
 
 spawnIn :: String -> Dir -> X ()
-spawnIn shellname dir = spawn $ myTerm ++ " '(cd ''" ++ dir ++ "'' && " ++ shellname ++ " )'"
+spawnIn shellname dir = spawn $ myTerm ++ "-cd '" ++ dir ++ "' -e '" ++ shellname ++ "'"
 
+-- | Functions for switching topics
 goto :: Topic -> X ()
 goto = switchTopic myTopicConfig
 
@@ -118,7 +121,6 @@ promptedShift = workspacePrompt myXPConfig $ windows . W.shift
 
 -- Workspaces
 myWorkspaces =  map show [1..7] ++ ["8:chat", "9:web"]
-
 
 myLayout  = imLayout $ mainLayout
 
@@ -232,7 +234,6 @@ toAdd x  =
      , ((modm             , xK_s), goToSelected defaultGSConfig)
      , ((modm             , xK_g), promptedGoto)
      , ((modm .|. shiftm  , xK_g), promptedShift)
-     , ((modm             , xK_Tab), switchNthLastFocused myTopicConfig . succ . length . W.visible . windowset =<< get)
      
      , ((modm .|. shiftm  , xK_x), changeDir defaultXPConfig)
      , ((modm .|. ctlm    , xK_n), appendFilePrompt defaultXPConfig $ myHomedir ++ ".notes/xmonad.txt")
