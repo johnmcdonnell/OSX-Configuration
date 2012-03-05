@@ -4,23 +4,24 @@
 
 
 Config {
-         font = "xft:Bitstream Vera Sans Mono:size=10"
-       , bgColor = "#3f3c6d"
-       , fgColor = "#a8a3f7"
+         font = "xft:Droid Sans Mono:size=11"
+       , bgColor = "#000000"
+       , fgColor = "#ffffff"
        , position = Top
-       , commands = [ Run Weather "KNYC" ["-t","<station>: <tempC>C Sky:<skyCondition>","-L","18","-H","25","--normal","green","--high","red","--low","cyan"] 36000
-                    --, Run Cpu ["-L","3","-H","50","--normal","green","--high","red"] 10
-                    --, Run Memory ["-t","Mem: <usedratio>%"] 10
-                    --, Run Swap [] 10
-                    --, Run Com "uname" ["-s","-r"] "" 36000
-                    --, Run TopMem ["-t", "<both1> <both2>"] 10
+       , commands = [ Run Weather "KNYC" ["-t","<tempC>C Sky:<skyCondition>","-L","18","-H","25","--normal","green","--high","red","--low","cyan"] 36000
+                    , Run Network "eth0" ["-L","0","-H","32","--normal","green","--high","red"] 10
+                    , Run Cpu ["-L","3","-H","50","--normal","green","--high","red"] 10
+                    , Run Memory ["-t","Mem: <usedratio>%"] 10
+                    , Run Swap [] 10
+                    , Run Com "uname" ["-s","-r"] "" 36000
+                    , Run TopMem ["-t", "<both1> <both2>"] 10
                     , Run Com "uname" ["-s","-r"] "" 36000
                     , Run Date "%a %b %_d %Y %H:%M" "date" 10
                     , Run StdinReader
                     ]
        , sepChar = "%"
        , alignSep = "}{"
-       , template = "%StdinReader% | %uname% } <fc=#ee9a00>%date%</fc> { %KNYC%"
+       , template = "%StdinReader% }  %cpu% %memory% %swap% %eth0% { <fc=#ee9a00>%date%</fc> | %KNYC% | %uname%"
        }
 
 
