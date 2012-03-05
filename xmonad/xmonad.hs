@@ -9,10 +9,12 @@ import XMonad
 import Graphics.X11.Xlib
 import XMonad.Prompt
 import XMonad.Prompt.Shell
+import XMonad.Prompt.Ssh
 import XMonad.Prompt.XMonad
 import XMonad.Prompt.AppendFile
 import XMonad.Prompt.Workspace
 import XMonad.Util.XSelection
+import XMonad.Util.Run (runInTerm)
 import XMonad.Util.WindowProperties
 --import XMonad.Actions.Search (google, isohunt, wayback, wikipedia, wiktionary, intelligent, selectSearch, promptSearch)
 import XMonad.Actions.TopicSpace
@@ -67,7 +69,7 @@ pdfViewer = "mupdf"
 myTopics :: [Topic]
 myTopics = 
     [ "dash"
-    , "ws1", "ws2", "ws3", "irc", "chat", "admin", "xmonad", "pdf", "mendeley", "skype", "music", "web" ]
+    , "ws1", "ws2", "ws3", "irc", "chat", "admin", "xmonad", "web", "pdf", "mendeley", "skype", "music", "frylock", "smash"]
 
 myTopicConfig :: TopicConfig
 myTopicConfig =  defaultTopicConfig
@@ -79,7 +81,7 @@ myTopicConfig =  defaultTopicConfig
     , defaultTopicAction = const $ spawnShell >*> 1
     , defaultTopic = "dash"
     , topicActions = M.fromList $ 
-    [ ("admin", runInTerm "su")
+    [ ("admin", runInTermWSdir "su")
     , ("music",  openGoogleMusic >>
                 spawn "spotify" >>
                 spawn "gnome-alsamixer") -- TODO: set up civilized sound controls.
@@ -91,14 +93,19 @@ myTopicConfig =  defaultTopicConfig
     , ("xmonad", spawn "gvim /home/mcdon/.xmonad/xmonad.hs")
     --, ("vimrc", spawn "gvim /home/mcdon/.vimrc /home/mcdon/.vim")
     , ("pdf", spawn pdfViewer)
+    , ("frylock", ssh "frylock")
+    , ("smash", ssh "smash")
     ]
     }
 
 openGoogleMusic = spawn  "firefox -new-window 'http://music.google.com'"
 
 -- | Functions for running things in shells
-runInTerm :: String -> X ()
-runInTerm shellname = currentTopicDir myTopicConfig  >>=  (spawnIn shellname)
+ssh :: String -> X ()
+ssh = runInTerm "" . ("ssh " ++)
+
+runInTermWSdir :: String -> X ()
+runInTermWSdir shellname = currentTopicDir myTopicConfig  >>=  (spawnIn shellname)
     
 spawnShell :: X ()
 spawnShell =  currentTopicDir myTopicConfig  >>=  spawnShellIn
@@ -107,7 +114,7 @@ spawnShellIn :: Dir ->  X ()
 spawnShellIn dir = spawnIn myShell dir
 
 spawnIn :: String -> Dir -> X ()
-spawnIn shellname dir = spawn $ myTerm ++ "-cd '" ++ dir ++ "' -e '" ++ shellname ++ "'"
+spawnIn shellname dir = runInTerm ("-cd '" ++ dir ++ "'") shellname
 
 -- | Functions for switching topics
 goto :: Topic -> X ()
@@ -224,6 +231,7 @@ toRemove x =
 toAdd x  = 
      [ ((modm             , xK_p), prompt ("exec") defaultXPConfig)
        --((modm             , xK_p), runOrRaisePrompt defaultXPConfig)
+     , ((modm             , xK_c), sshPrompt defaultXPConfig)
      , ((modm .|. shiftm  , xK_p), prompt (myTerm ++ " -e ") defaultXPConfig)
      --, ((modm             , xK_x), xmonadPrompt defaultXPConfig)
      -- Topics keymaps:
@@ -262,7 +270,7 @@ imManageHooks = composeAll [isIM --> moveToIM] where
     isIM     = foldr1 (<||>) [isPidgin, isSkype]
     isPidgin = className =? "Pidgin"
     isSkype  = className =? "Skype"
-    moveToIM = doF $ W.shift "8:chat"
+    moveToIM = doF $ W.shift "chat"
  
 -- modified version of XMonad.Layout.IM --
 -- FROM http://www.haskell.org/haskellwiki/Xmonad/Config_archive/Thomas_ten_Cate%27s_xmonad.hs
