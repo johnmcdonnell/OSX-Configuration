@@ -99,7 +99,7 @@ myTopicConfig =  defaultTopicConfig
     ]
     }
 
-openGoogleMusic = spawn  "firefox -new-window 'http://music.google.com'"
+openGoogleMusic = spawn  "google-chrome --app='http://music.google.com'"
 
 -- | Functions for running things in shells
 ssh :: String -> X ()
@@ -127,8 +127,6 @@ promptedGoto = workspacePrompt myXPConfig goto
 promptedShift :: X ()
 promptedShift = workspacePrompt myXPConfig $ windows . W.shift
 
--- Workspaces
-myWorkspaces =  map show [1..7] ++ ["8:chat", "9:web"]
 
 myLayout  = imLayout $ mainLayout
 
