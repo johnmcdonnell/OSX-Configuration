@@ -180,6 +180,7 @@ Bundle 'Command-T'
 Bundle "ack.vim"
 Bundle "git://git.wincent.com/command-t.git"
 Bundle 'Indent-Guides'
+Bundle "git://github.com/gregsexton/gitv.git"
 
 " vim-r plugin.
 let vimrplugin_conqueplugin = 0
