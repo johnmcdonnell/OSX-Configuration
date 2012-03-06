@@ -16,7 +16,7 @@ import XMonad.Prompt.Workspace
 import XMonad.Util.XSelection
 import XMonad.Util.Run (runInTerm)
 import XMonad.Util.WindowProperties
---import XMonad.Actions.Search (google, isohunt, wayback, wikipedia, wiktionary, intelligent, selectSearch, promptSearch)
+import XMonad.Util.WorkspaceCompare (getSortByXineramaRule)
 import XMonad.Actions.TopicSpace
 import XMonad.Actions.GridSelect
 import XMonad.Actions.Commands
@@ -62,14 +62,14 @@ myHomedir = "/home/j/"
 browserCmd = "firefox"
 pdfViewer = "mupdf"
 
--- TODO: set this up.
+-- for dzen, not in use right now.
 --myLogHook = dynamicLogWithPP (myPrettyPrinter dbus)
 
 --  Trying this topic thing out:
 myTopics :: [Topic]
 myTopics = 
     [ "dash"
-    , "ws1", "ws2", "ws3", "irc", "chat", "admin", "xmonad", "web", "pdf", "mendeley", "skype", "music", "frylock", "smash"]
+    , "ws1", "ws2", "ws3", "irc", "admin", "xmonad", "chat", "web", "pdf", "mendeley", "skype", "music", "frylock", "smash"]
 
 myTopicConfig :: TopicConfig
 myTopicConfig =  defaultTopicConfig
@@ -89,8 +89,9 @@ myTopicConfig =  defaultTopicConfig
                spawn "xchat")
     , ("web", spawn "firefox -browser")
     , ("mendeley", spawn "mendeleydesktop")
-    , ("mendeley", spawn "skype")
-    , ("xmonad", spawn "gvim /home/mcdon/.xmonad/xmonad.hs")
+    , ("skype", spawn "skype")
+    , ("xmonad", spawn "gvim /home/mcdon/.xmonad/xmonad.hs" >>
+                 spawnShellIn "/home/mcdon/config_repo")
     --, ("vimrc", spawn "gvim /home/mcdon/.vimrc /home/mcdon/.vim")
     , ("pdf", spawn pdfViewer)
     , ("frylock", ssh "frylock")
@@ -158,6 +159,7 @@ tabConfig = defaultTheme { inactiveBorderColor = "#FF0000"
 -- normalLayout = tiled ||| (spiral (6/7)) ||| noBorders Full
 
 -- | This is for gridselect TODO make this work.
+-- (currently the arrow keys don't quite work right)
 gsConfig = defaultGSConfig { gs_navigate = fix $ \self ->
     let navKeyMap = M.mapKeys ((,) 0) $ M.fromList $
                 [(xK_Escape, cancel)
@@ -182,28 +184,44 @@ gsConfig = defaultGSConfig { gs_navigate = fix $ \self ->
                 ]
     in makeXEventhandler $ shadowWithKeymap navKeyMap (const self) }
 
+-- Xmobar stuff
+myBar = "xmobar"
+myPP = xmobarPP { ppCurrent = xmobarColor "#ff7777" "" . wrap "<" ">"
+                , ppVisible = wrap "(" ")"
+                , ppUrgent  = xmobarColor "#ffffff" "#ff0000" . wrap "*" "*"
+                , ppTitle   = xmobarColor "#aaaaaa" "" . wrap "*" "*"
+                , ppWsSep   = "  "
+                }
+
+toggleStrutsKey XConfig {XMonad.modMask = modMask} = (modMask, xK_b) -- to drop the bar from layout.
+
+-- Float certain apps
+myManageHook = composeAll
+    [ className =? "Gimp"       --> doFloat
+    , className =? "pygame"     --> doFloat
+    , className =? "gvncviewer" --> doFloat
+    ]
+
 --main = xmonad =<< statusBar myBar myPP toggleStrutsKey myConfig -- TODO: restore
 
 main :: IO ()
 main = do
     checkTopicConfig myTopics myTopicConfig
-    let urgency = withUrgencyHook dzenUrgencyHook { args = ["-bg", "darkgreen", "-xs", "l"] }
-    -- Todo: put this back:
+    -- For use with dzen, also maybe broken.
     --withUrgencyHook dzenUrgencyHook { args = ["-bg", "darkgreen", "-xs", "l"] } $ 
     xmonad =<< statusBar myBar myPP toggleStrutsKey myConfig
 
-myBar = "xmobar"
-myPP = xmobarPP { ppCurrent = xmobarColor "#429942" "" . wrap "<" ">" }
-toggleStrutsKey XConfig {XMonad.modMask = modMask} = (modMask, xK_b) -- to drop the bar from layout.
+
 myConfig = defaultConfig {
-         normalBorderColor  = myNormalBorderColor
-        ,focusedBorderColor = myFocusedBorderColor
-        ,keys               = myKeys
-        ,modMask            = myModMask
-        ,borderWidth        = myBorderWidth
-        ,terminal           = myTerm
-        ,workspaces         = myTopics
-        ,layoutHook         = myLayout
+          normalBorderColor  = myNormalBorderColor
+        , focusedBorderColor = myFocusedBorderColor
+        , keys               = myKeys
+        , modMask            = myModMask
+        , borderWidth        = myBorderWidth
+        , terminal           = myTerm
+        , workspaces         = myTopics
+        , layoutHook         = myLayout
+        , manageHook         = myManageHook <+> imManageHooks <+> manageHook defaultConfig
         -- ,handleEventHook    = promoteWarp  # used with magic focus.
         ,focusFollowsMouse  = myFocusFollowsMouse
     }
@@ -243,20 +261,19 @@ toAdd x  =
      , ((modm .|. shiftm  , xK_g), promptedShift)
      
      , ((modm .|. shiftm  , xK_x), changeDir defaultXPConfig)
-     , ((modm .|. ctlm    , xK_n), appendFilePrompt defaultXPConfig $ myHomedir ++ ".notes/xmonad.txt")
-     --, ((modm             , xK_d), promptSearch greenXPConfig wikipedia)
-     --, ((modm .|. shiftm  , xK_d), selectSearch wikipedia)
-     --, ((modm             , xK_g), promptSearch greenXPConfig (intelligent google))
-     --, ((modm .|. shiftm  , xK_g), selectSearch (intelligent google))
+     , ((ctlm .|. shiftm  , xK_n), appendFilePrompt defaultXPConfig $ myHomedir ++ ".notes/xmonad.txt")
      , ((modm             , xK_q), restart "xmonad" True)
      , ((modm .|. ctlm    , xK_q), do
             spawn "kill $GNOME_KERYING_PID" 
             io (exitWith ExitSuccess)
             )
      , ((modm .|. shiftm  , xK_q), spawn "/opt/scripts/gothefucktosleep")
+     , ((0                , xK_Print), spawn "scrot")
+     , ((0                , xK_Pause), spawn "amixer set Master,0 toggle") -- TOOD: test
+     , ((controlMask      , xK_Print), spawn "sleep 0.2; scrot -s")
      , ((modm             , xK_z), toggleWS) -- from cycleWS
-     -- , ((modm .|. shiftm  , xK_h), prevWS) -- from cycleWS
-     -- , ((modm .|. shiftm  , xK_l), nextWS) -- from cycleWS
+     , ((ctlm .|. shiftm  , xK_h), prevWS) -- from cycleWS
+     , ((ctlm .|. shiftm  , xK_l), nextWS) -- from cycleWS
      ] ++ physicalScreenRemaps
 
 

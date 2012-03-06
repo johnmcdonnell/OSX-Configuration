@@ -4,13 +4,13 @@
 
 
 Config {
-         font = "xft:Droid Sans Mono:size=11"
+         font = "xft:Roboto:size=11"
        , bgColor = "#000000"
        , fgColor = "#ffffff"
        , position = Top
-       , commands = [ Run Weather "KNYC" ["-t","<tempC>C Sky:<skyCondition>","-L","18","-H","25","--normal","green","--high","red","--low","cyan"] 36000
-                    , Run Network "eth0" ["-L","0","-H","32","--normal","green","--high","red"] 10
-                    , Run Cpu ["-L","3","-H","50","--normal","green","--high","red"] 10
+       , commands = [ Run Weather "KNYC" ["-t","<tempC>C Sky:<skyCondition>","-L","18","-H","25","--normal","#77ff77","--high","#ff7777","--low","#7777ff"] 36000
+                    , Run Network "eth0" ["-L","0","-H","32","--normal","#77ff77","--high","#ff7777"] 10
+                    , Run Cpu ["-L","3","-H","50","--normal","#77ff77","--high","#ff7777"] 10
                     , Run Memory ["-t","Mem: <usedratio>%"] 10
                     , Run Swap [] 10
                     , Run Com "uname" ["-s","-r"] "" 36000
@@ -21,7 +21,7 @@ Config {
                     ]
        , sepChar = "%"
        , alignSep = "}{"
-       , template = "%StdinReader% }  %cpu% %memory% %swap% %eth0% { <fc=#ee9a00>%date%</fc> | %KNYC% | %uname%"
+       , template = "%StdinReader% }  %cpu% %memory% %swap% %eth0% { <fc=#7777cc>%date%</fc>  |  %KNYC%  |  %uname%  "
        }
 
 
