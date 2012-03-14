@@ -19,8 +19,12 @@ xterm*charClass: 33:48,35:48,37:48,45-47:48,95:48,126:48,35:48
 
 !XTerm*font: -*-proggytinysz-medium-*-*-*-12-*-*-*-*-*-*-*
 !XTerm*font: -*-Opti-*-*-*-13-*-*-*-*-*-*-*
-xterm*faceName: Anonymous
+xterm*faceName: Anonymous Pro
 xterm*faceSize: 12
+
+xpdf*enableFreeType: yes
+xpdf*antialias: yes
+xpdf*urlCommand: firefox %s
 
 ! Not sure what this is about:
 !*VT100*reverseVideo: on
@@ -53,13 +57,14 @@ URxvt*saveLines: 9999
 !URxvt*font: xft:Anonymous Pro
 URxvt*font: xft:Bitstream Vera Sans Mono
 
-
-! These don't seem to work
-!URxvt*faceName: Anonymous Pro
-!URxvt*faceSize: 14
-
-!mrxvt*faceName: Anonymous Pro
-!mrxvt*faceSize: 12
+# URL handling:
+URxvt.perl-ext-common:  default,matcher,url-select
+URxvt.keysym.M-u:      perl:url-select:select_next
+URxvt.urlLauncher:      /usr/bin/firefox
+URxvt.matcher.button:   1
+#URxvt.underlineURLs:   true
+URxvt.colorUL:         #86a2be
+URxvt.print-pipe:      cat > $(echo urxvt.dump.$(date + '%Y%M%d%H%m%S'))
 
 
 aterm*loginShell:true
