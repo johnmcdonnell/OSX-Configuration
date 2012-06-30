@@ -1,22 +1,48 @@
+## Don't echo anything from init
+sink("/dev/null")
 
 
 # Some useful aliases
 cd <- setwd
 pwd <- getwd
-lss <- dir
 
-r <- getOption( "repos" ) 
-r["CRAN"] <- "http://cran.us.r-project.org"
-options( repos=r )
-rm(r)
+# Don't spam large amounts of data at me
+options(max.print = 200)
 
-
-
-# Override q() to not save by default.
-# Same as saying q("no")
-q <- function (save="no", ...) {
-  quit(save=save, ...)
+# Options pertaining to an interactive session
+if (interactive()) {
+  library( vimcom )
+  library( colorout )
+  library( setwidth )
+  options(vimcom.verbose = 1, vimcom.allnames=TRUE)
+  if(Sys.getenv("VIMRPLUGIN_TMPDIR") != "")
+    library(vimcom)
+  if(Sys.getenv("TERM") != "linux" && Sys.getenv("TERM") != "")
+    setOutputColors256(verbose = FALSE)
+  if(nchar(Sys.getenv("DISPLAY")) > 1 && Sys.info()["sysname"] != "Darwin"){
+     grDevices::X11.options(width = 4.5, height = 4, ypos = 0,
+                            xpos = 1000, pointsize = 10)
+     options(editor = 'gvim -f -c "set ft=r"')
+     options(pager = "gvim -c 'set ft=rdoc' -")
+   } else {
+     options(editor = 'vim -c "set ft=r"')
+     options(pager = "vim -c 'set ft=rdoc' -")
+   }
 }
 
-# Andrew Gelman's plot seasoning:
-#setHook( 'plot.new', function(..) par (mar=c(3,3,2,1), mgp=c(2,.7,0), tck=-.02) )
+addrepo <- function(...) {
+      options(repos=unique(c(getOption("repos"), c(...))))
+}
+
+#addrepo("http://watson.nci.nih.gov/cran")
+addrepo("http://cran.mirrors.hoobly.com/")
+addrepo("http://r-forge.r-project.org")
+addrepo("http://cran.us.r-project.org")
+
+# Stop asking me which repo to use every time I try to install
+# something. (Simply adding a repo is not enough)
+options(repos=Filter(function(x) x != "@CRAN@", getOption("repos")))
+
+## Turn echo back on
+sink(NULL)
+
