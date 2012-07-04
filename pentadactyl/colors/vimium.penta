@@ -27,12 +27,12 @@ hi -a BufTabAlternate:hover color:#302505;background-color: #FFC542; border-radi
 "}}}
 " Completion {{{
 hi -a CompIcon           display: none;
-hi -a CompItem[selected] background: #FFC542 !important;
-hi -a CompTitle          text-transform: uppercase; background: -moz-linear-gradient(top, #FFF785, #FFC542); font-size: 11px; padding: 1px 3px 0px 3px; font-family : "Helvetica Neue", "Helvetica", "Arial", "Sans"; font-weight: bold; color: #302505;
+hi -a CompItem[selected] background: #AAAAAA !important;
+hi -a CompTitle          text-transform: uppercase; background: #FF77AA; font-size: 11px; padding: 1px 3px 0px 3px; font-family : "Helvetica Neue", "Helvetica", "Arial", "Sans"; font-weight: bold; color: #302505;
 hi -a CompTitleSep       background: #C38A22;
 " }}}
 " Hints {{{
-hi Hint              text-transform: uppercase; font-family : "Helvetica Neue", "Helvetica", "Arial", "Sans"; font-weight: bold; font-size: 11px; text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6); color: #302505; padding: 1px 3px 0px 3px; background: -moz-linear-gradient(top, #FFF785, #FFC542); border: 1px #C38A22 solid; border-radius: 2px; -moz-box-shadow: 0 3px 7px 0px rgba(0,0,0,0.3);
+hi Hint              text-transform: uppercase; font-family : "Helvetica Neue", "Helvetica", "Arial", "Sans"; font-weight: bold; font-size: 11px; text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6); color: #302505; padding: 1px 3px 0px 3px; background: #FFC542; border: 1px #C38A22 solid; border-radius: 2px; -moz-box-shadow: 0 3px 7px 0px rgba(0,0,0,0.3);
 hi HintElem          background-color: inherit !important;
 hi HintActive	     background-color: inherit !important;
 hi HintImage         opacity: .7 !important;
