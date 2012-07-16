@@ -1,4 +1,4 @@
-{-# LANGUAGE FlexibleInstances, MultiParamTypeClasses, TypeSynonymInstances, FlexibleContexts, NoMonomorphismRestriction #-}
+{-# LANGUAGE MultiParamTypeClasses, TypeSynonymInstances, FlexibleContexts, NoMonomorphismRestriction #-}
 module Main (main) where
 
 import Control.Monad
@@ -37,10 +37,12 @@ import XMonad.Layout.NoBorders
 import XMonad.Layout.Named
 import XMonad.Layout.TwoPane
 import XMonad.Layout.Combo
+import XMonad.Layout.IM
 import XMonad.Layout.WorkspaceDir
 import XMonad.Layout.PerWorkspace
 import XMonad.Layout.WindowNavigation
 import XMonad.Layout.LayoutModifier
+import XMonad.Layout.Reflect (reflectHoriz)
 --import XMonad.Layout.MagicFocus
 
 import qualified XMonad.StackSet as W
@@ -58,7 +60,7 @@ myXPConfig = defaultXPConfig { font="-*-lucida-medium-r-*-*-14-*-*-*-*-*-*", hei
 myTerm = "urxvt -tint white -sh 18 "
 -- myTerm = "gnome-terminal --hide-menubar"
 myShell = "zsh"
-myHomedir = "/home/j/"
+myHomedir = "/home/mcdon/"
 browserCmd = "firefox"
 pdfViewer = "mupdf"
 
@@ -69,37 +71,50 @@ pdfViewer = "mupdf"
 myTopics :: [Topic]
 myTopics = 
     [ "dash"
-    , "ws1", "ws2", "ws3", "irc", "admin", "xmonad", "chat", "web", "pdf", "mendeley", "skype", "music", "frylock", "smash"]
+    
+    , "ws1", "ws2", "ws3", "ws4", "xmonad", "music", "chat", "web", "pdf",  "admin", "vimrc",
+    -- Apps
+    "skype", "gimp", "mendeley", "mysql", "workflowy", "irc", "inkscape", "mathematica",
+    -- Servers:
+    "frylock", "smash"]
 
 myTopicConfig :: TopicConfig
 myTopicConfig =  defaultTopicConfig
     { topicDirs = M.fromList $
         [ ("admin",  "/etc")
         , ("xmonad",  myHomedir ++ ".xmonad")
-        , ("pdf",  "/Documents")
+        , ("inkscape",  "/Documents")
         ]
     , defaultTopicAction = const $ spawnShell >*> 1
     , defaultTopic = "dash"
     , topicActions = M.fromList $ 
-    [ ("admin", runInTermWSdir "su")
-    , ("music",  openGoogleMusic >>
-                spawn "spotify" >>
-                spawn "gnome-alsamixer") -- TODO: set up civilized sound controls.
-    , ("chat", spawn "pidgin" >>
-               spawn "xchat")
-    , ("web", spawn "firefox -browser")
-    , ("mendeley", spawn "mendeleydesktop")
-    , ("skype", spawn "skype")
-    , ("xmonad", spawn "gvim /home/mcdon/.xmonad/xmonad.hs" >>
-                 spawnShellIn "/home/mcdon/config_repo")
-    --, ("vimrc", spawn "gvim /home/mcdon/.vimrc /home/mcdon/.vim")
-    , ("pdf", spawn pdfViewer)
-    , ("frylock", ssh "frylock")
-    , ("smash", ssh "smash")
+    [ ("admin",       runInTermWSdir "su")
+    , ("music",       spawnChromeApp "http://music.google.com"  >>
+                      spawnChromeApp "http://hypem.com"   >>
+                      -- spawn "spotify" >>
+                      spawn "gnome-alsamixer") -- TODO: set up civilized sound controls.
+    , ("chat",        spawn "pidgin")
+    , ("workflowy",   spawnChromeApp "http://workflowy.com")
+    , ("irc",         spawn "xchat")
+    , ("web",         spawn "firefox -browser")
+    , ("mysql",       spawn "mysql-workbench")
+    , ("mendeley",    spawn "mendeleydesktop")
+    , ("skype",       spawn "skype")
+    , ("gimp",        spawn "gimp")
+    , ("inkscape",    spawn "inkscape")
+    , ("mathematica", spawn "mathematica")
+    , ("xmonad",      spawn ("gvim " ++ myHomedir ++ ".xmonad/xmonad.hs") >>
+                      spawnShellIn "/home/mcdon/config_repo")
+    , ("vimrc",       spawn ("gvim " ++ myHomedir ++ ".vimrc") >> 
+                      spawn ("gvim " ++ myHomedir ++ ".vim"))
+    , ("pdf",         spawn pdfViewer)
+    , ("frylock",     ssh "frylock")
+    , ("smash",       ssh "smash")
     ]
     }
 
-openGoogleMusic = spawn  "google-chrome --app='http://music.google.com'"
+spawnChromeApp :: MonadIO m => String -> m ()
+spawnChromeApp = spawn . ("google-chrome --app='"++) . (++"'")
 
 -- | Functions for running things in shells
 ssh :: String -> X ()
@@ -127,8 +142,16 @@ promptedGoto = workspacePrompt myXPConfig goto
 promptedShift :: X ()
 promptedShift = workspacePrompt myXPConfig $ windows . W.shift
 
+myLayout  = gimpLayout $  imLayout $ mainLayout
 
-myLayout  = imLayout $ mainLayout
+-- Miscellaneous functions
+
+
+-- Add this to hook for gimp:
+-- withFocused (\w -> io $ runProcessWithINput "xprop" ["-id", show w] "" >>= notify)
+
+-- missing runInput and Run
+-- notify = io . runInput (Run "xmessage" ["-file", "-"])
 
 
 imLayout = onWorkspace "chat" $ avoidStruts $ withIMs ratio rosters chatLayout where
@@ -137,6 +160,11 @@ imLayout = onWorkspace "chat" $ avoidStruts $ withIMs ratio rosters chatLayout w
     rosters         = [skypeRoster, pidginRoster]
     pidginRoster    = And (ClassName "Pidgin") (Role "buddy_list")
     skypeRoster     = (ClassName "Skype") `And` (Not (Title "Options")) `And` (Not (Role "Chats")) `And` (Not (Role "CallWindowForm"))
+
+-- | TODO: Doesn't seem to work right.
+gimpLayout = onWorkspace "gimp" $ withIM (0.11) ((ClassName "Gimp") `And` (Title "Toolbox")) $ 
+                                  reflectHoriz $ 
+                                  withIM (0.15) (Role "gimp-dock") Full
 
 
 mainLayout = avoidStruts $ workspaceDir "~" (tiled) ||| (spiral (toRational (2/(1+sqrt 5 :: Double)))) ||| Full
@@ -165,19 +193,19 @@ gsConfig = defaultGSConfig { gs_navigate = fix $ \self ->
                 ,(xK_slash , substringSearch self)]
            ++
             map (\(k,a) -> (k,a >> self))
-                [(xK_Left  , move (-1,0 ))
-                ,(xK_h     , move (-1,0 ))
-                ,(xK_n     , move (-1,0 ))
-                ,(xK_Right , move (1,0  ))
-                ,(xK_l     , move (1,0  ))
-                ,(xK_i     , move (1,0  ))
-                ,(xK_Down  , move (0,1  ))
-                ,(xK_j     , move (0,1  ))
-                ,(xK_e     , move (0,1  ))
-                ,(xK_Up    , move (0,-1 ))
-                ,(xK_u     , move (0,-1 ))
+                [(xK_Left  , move (-1, 0))
+                ,(xK_h     , move (-1, 0))
+                ,(xK_n     , move (-1, 0))
+                ,(xK_Right , move ( 1, 0))
+                ,(xK_l     , move ( 1, 0))
+                ,(xK_i     , move ( 1, 0))
+                ,(xK_Down  , move ( 0, 1))
+                ,(xK_j     , move ( 0, 1))
+                ,(xK_e     , move ( 0, 1))
+                ,(xK_Up    , move ( 0,-1))
+                ,(xK_u     , move ( 0,-1))
                 ,(xK_y     , move (-1,-1))
-                ,(xK_m     , move (1,-1 ))
+                ,(xK_m     , move ( 1,-1))
                 ,(xK_space , setPos (0,0))
                 ]
     in makeXEventhandler $ shadowWithKeymap navKeyMap (const self) }
@@ -195,8 +223,11 @@ toggleStrutsKey XConfig {XMonad.modMask = modMask} = (modMask, xK_b) -- to drop 
 
 -- Float certain apps
 myManageHook = composeAll
-    [ className =? "Gimp"       --> doFloat
+    [ className =? "Gimp"       --> (doFloat <+> (doShift "gimp"))
     , className =? "pygame"     --> doFloat
+    , className =? "zathura"    --> doShift "pdf"
+    , className =? "evince"     --> doShift "pdf"
+    , className =? "inkscape"   --> doShift "inkscape"
     , className =? "gvncviewer" --> doFloat
     ]
 
@@ -267,8 +298,8 @@ toAdd x  =
             )
      , ((modm .|. shiftm  , xK_q), spawn "/opt/scripts/gothefucktosleep")
      , ((0                , xK_Print), spawn "scrot")
-     , ((0                , xK_Pause), spawn "amixer set Master,0 toggle") -- TOOD: test
      , ((controlMask      , xK_Print), spawn "sleep 0.2; scrot -s")
+     , ((0                , xK_Pause), spawn "amixer set Master,0 toggle")
      , ((modm             , xK_z), toggleWS) -- from cycleWS
      , ((ctlm .|. shiftm  , xK_h), prevWS) -- from cycleWS
      , ((ctlm .|. shiftm  , xK_l), nextWS) -- from cycleWS
@@ -331,3 +362,4 @@ applyIMs ratio props wksp rect = do
     let filteredStack = stack >>= W.filter (`notElem` rosters)
     (a,b) <- runLayout (wksp {W.stack = filteredStack}) chatsRect
     return (zip rosters rosterRects ++ a, b)
+
