@@ -307,7 +307,7 @@ toAdd x  =
 
 
 physicalScreenRemaps = [((modm .|. mask, key), f sc)
-     | (key, sc) <- zip [xK_w, xK_e, xK_r] [1,0,2]
+     | (key, sc) <- zip [xK_w, xK_e, xK_r] [0,1,2]
      , (f, mask) <- [(viewScreen, 0), (sendToScreen, shiftMask)]]
 
 
