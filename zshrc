@@ -1,6 +1,14 @@
 
-# You can use sudo mdutil -a -i off to turn off spotlight.
-# Use sudo mdutil -a -i on to turn it back on.
+# term
+if [ "x" != "x$DISPLAY" ]
+then
+   if [ "screen" = "$TERM" ]
+   then
+       export TERM=screen-256color
+   else
+       export TERM=xterm-256color
+   fi
+fi
 
 #if [[ -z $STY ]]; then  # this might be dangerous.
 #	exec screen -R
@@ -8,8 +16,8 @@
 
 # shell variables
 export PROMPT="[%~]
-%h %%"
-#export RPROMPT="[%h]"
+#%h %%"
+export RPROMPT="[%h]"
 
 # set prompt to cue command mode
 # (http://zshwiki.org/home/examples/zlewidgets) 
@@ -42,7 +50,7 @@ dirs /Users/j/Dropbox/Classes/DawClass/finalPaper/ /Users/j/Experiments/weather_
 
 
 # The following lines were added by compinstall
-#
+
 zstyle ':completion:*' completer _complete _ignored _correct _approximate
 zstyle ':completion:*' format 'Completing %d'
 zstyle ':completion:*' group-name ''
@@ -92,7 +100,7 @@ alias expserv='cd /Volumes/Experiments/john/Weather2'
 alias nsf='cd ~/Documents/NSFapp'
 
 # command aliases
-alias mlab='matlab -nojvm -nodisplay'
+alias mlab='matlab -nodisplay'
 alias bibtexformat='perl /Users/j/Documents/Documentation/bibtexformat/bibtexformat -s'
 alias cs2010='cd /Users/j/Experiments/weather_trunk/Gabor_cogsci2010'
 alias analysis='cd /Users/j/Documents/Analysis'
@@ -125,12 +133,12 @@ export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 
 # neat stuff:
-
 alias ascii='less /usr/share/misc/ascii'
 
 # Colors for ls
 export CLICOLOR=1
 export LSCOLORS=ExFxCxDxBxegedabagacad
+export LS_COLORS=auto
 
 #-------------------------------------------------------------
 # tailoring 'less'
@@ -139,46 +147,16 @@ export LSCOLORS=ExFxCxDxBxegedabagacad
 alias more='less'
 export PAGER=less
 #export LESSCHARSET='latin1'   # I should maybe actually reconsider this
-export LESSOPEN='|/usr/bin/lesspipe.sh %s 2>&-'
+# export LESSOPEN='|/usr/bin/lesspipe.sh %s 2>&-'
 # Use this if lesspipe.sh exists
 export LESS='-i -N -w  -z-4 -g -e -M -X -F -R -P%t?f%f :stdin .?pb%pb\%:?lbLine %lb:?bbByte %bb:-...'
-
-# Use System frameworks (mostly for pyobjc)
-#export PYTHONPATH='/System/Library/Frameworks/Python.framework/Versions/2.6/Extras/lib/python'
 
 # Handy stuff for ipython
 export LESS="-R" # Tells less to use raw input
 export EDITOR=vim
 
-# PATH for port.
-# REQUIRES GCC!!!
-export PATH=/opt/local/bin:$PATH
-export MANPATH=/opt/local/share/man:$MANPATH
-export INFOPATH=/opt/local/share/info:$INFOPATH
-
-# Scripts folder
-export PATH=/opt/scripts:$PATH
-
-
-# Godi for OCaml
-export PATH="/opt/godi/bin:/opt/godi/sbin:$PATH";
-export MANPATH="/opt/godi/man:$MANPATH";
-
-# Mathematica
-export PATH="/Applications/Mathematica.app/Contents/MacOS/:$PATH";
-
-# Android debugger
-export PATH=/Users/j/source/android-sdk-mac/tools:$PATH
-
-# Setting PATH for /opt/python
-export PATH="/opt/python/bin:$PATH"
-export PKG_CONFIG_PATH="/opt/python/lib/pkgconfig"
-export PATH="/Library/Frameworks/Python.framework/Versions/Current/bin/:$PATH"
-export PATH="/usr/texbin:$PATH"
-
 # Make X11 defaults work.
 #xrdb -merge ~/.Xdefaults &
-
 
 # pip zsh completion start
 function _pip_completion {
@@ -192,35 +170,32 @@ function _pip_completion {
 compctl -K _pip_completion pip
 # pip zsh completion end
 
+# Matlab
+export PATH=$PATH:/opt/matlab/bin
 
-# Cabal for Haskell
-export PATH="/Users/j/.cabal/bin:$PATH";
+# Cabal
+export PATH=$PATH:/home/mcdon/.cabal/bin
+
+# ADMB adjustments
+export PATH=$PATH:/usr/local/admb/bin
+export ADMB_HOME=/usr/local/admb/
+
+# rstudio adjustments (this was a silly place to put this!
+export PATH=$PATH:/usr/lib/rstudio/bin
+
+# Autojump
+source /etc/profile.d/autojump.zsh
 
 export USERWM=`which xmonad`
-export BROWSER=`which midori`
+export BROWSER=`which firefox`
 
-# oh my zsh stuff
-ZSH=$HOME/.oh-my-zsh
+# perl
+export PERL_LOCAL_LIB_ROOT="/home/mcdon/perl5"
+export PERL_MB_OPT="--install_base /home/mcdon/perl5"
+export PERL_MM_OPT="INSTALL_BASE=/home/mcdon/perl5"
+export PERL5LIB="/home/mcdon/perl5/lib/perl5/x86_64-linux-thread-multi:/home/mcdon/perl5/lib/perl5"
+export PATH="/home/mcdon/perl5/bin:$PATH"
 
-# Set to this to use case-sensitive completion
-# export CASE_SENSITIVE="true"
+# ruby
+export PATH="/home/mcdon/.gem/ruby/1.9.1/bin:$PATH"
 
-# Comment this out to disable weekly auto-update checks
-# export DISABLE_AUTO_UPDATE="true"
-
-# Uncomment following line if you want to disable colors in ls
-# export DISABLE_LS_COLORS="true"
-
-# Uncomment following line if you want to disable autosetting terminal title.
-# export DISABLE_AUTO_TITLE="true"
-
-# Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
-# Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(osx git macports pip svn vi-mode brew lol)
-
-# Theme
-export ZSH_THEME="bira"
-
-source $ZSH/oh-my-zsh.sh
-
-# Customize to your needs...
