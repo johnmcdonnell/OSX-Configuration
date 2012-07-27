@@ -1,10 +1,16 @@
 " This must be first, because it changes other options as a side effect.
 set nocompatible
 
+let mapleader = ","
+
 filetype off
 
-source ~/.vim/bundles.vim
+runtime bundle/vim-pathogen/autoload/pathogen.vim
+" source ~/.vim/bundles.vim
+call pathogen#infect()
 
+syntax on
+filetype on
 filetype plugin indent on
 
 set tabstop=8
@@ -18,11 +24,8 @@ set autoindent
 " allow backspacing over everything in insert mode
 set backspace=indent,eol,start
 
-if has("vms")
-  set nobackup		" do not keep a backup file, use versions instead
-else
-  set backup		" keep a backup file
-endif
+set nobackup		" keep a backup file
+set noswapfile		" too much pollution
 set history=80		" keep 50 lines of command line history
 set ruler		" show the cursor position all the time
 set showcmd		" display incomplete commands
@@ -53,12 +56,8 @@ if has('mouse')
   set mouse=a
 endif
 
-" Switch syntax highlighting on, when the terminal has colors
-" Also switch on highlighting the last used search pattern.
-if &t_Co > 2 || has("gui_running")
-  syntax on
-  set hlsearch
-endif
+" Hilighting last search pattern.
+set hlsearch
 
 " Only do this part when compiled with support for autocommands.
 if has("autocmd")
@@ -149,30 +148,18 @@ let g:miniBufExplMapWindowNavArrows = 1
 let g:miniBufExplMapCTabSwitchBufs = 1 
 let g:miniBufExplModSelTarget = 1 
 
-" OPTIONAL: Starting with Vim 7, the filetype of empty .tex files defaults
-" to
+" OPTIONAL: Starting with Vim 7, the filetype of empty .tex files defaults to
 " 'plaintex' instead of 'tex', which results in vim-latex not being loaded.
 " The following changes the default filetype back to 'tex':
 let g:tex_flavor='latex'
 autocmd FileType python set omnifunc=pysmell#Complete
 
-" For vimrplugin
-" let vimrplugin_term = "urxvt"  " By default probably uses aterm.
-" let vimrplugin_term = "gnome-terminal"  " By default probably uses aterm.
-" let vimrplugin_term_cmd = "urxvt -tint white -sh 18"  " By default probably uses aterm.
-let vimrplugin_underscore = 1  " _  generates <-, __ generates _
-
-"if v:progname =~? "mvim"
-  " let vimrplugin_term_cmd = "/Applications/Utilities/iTerm.app/Contents/MacOS/iTerm -t R"
-  " let vimrplugin_term_cmd = "/Applications/Utilities/Terminal.app/Contents/MacOS/terminal -t R"
-"endif
-let vimrplugin_conqueplugin = 0
-" Trying very hard to use tmux:
-let vimrplugin_tmux = 1
-let g:ScreenImpl = 'Tmux'
-let g:vimrplugin_tmux = 1
-let vimrplugin_vimpager="horizontal"
-
+" For conque
+let ConqueTerm_CWInsert = 1
+let ConqueTerm_Color = 0
+let ConqueTerm_ReadUnfocused = 1
+" Can't remember what this did:
+" let g:ConqueTerm_SendVisKey = '`'
 
 " For svndiff
 let g:svndiff_autoupdate=1
@@ -180,28 +167,51 @@ hi DiffAdd      ctermfg=0 ctermbg=2 guibg='green'
 hi DiffDelete   ctermfg=0 ctermbg=1 guibg='red'
 hi DiffChange   ctermfg=0 ctermbg=3 guibg='yellow' 
 
-" Vundle stuff:
-source ~/.vim/bundles.vim
-
-" vim-r plugin.
-let vimrplugin_conqueplugin = 0
-let vimrplugin_vimpager="horizontal"
-let r_syntax_folding = 1
-
-" For pathogen
-"call pathogen#runtime_append_all_bundles()
-
-" For FuzzyFinder
+" For FuzzyFinder (consider replacing w/ ctrlp)
 nmap ,f :FufFileWithCurrentBufferDir<CR>
 nmap ,b :FufBuffer<CR>
 nmap ,t :FufTaggedFile<CR>  " Not sure how to get tags for non-c++ things
 nmap ,c :FufChangeList<CR>
 
-" For conque
-let g:ConqueTerm_SendVisKey = '`'
+" For ctrlp
+set runtimepath^=~/.vim/bundle/ctrlp
+let g:ctrlp_map = '<c-p>'
+let g:ctrlp_custom_ignore = {
+    \ 'dir':  '\.git$\|\.hg$\|\.svn$',
+    \ 'file': '\.so$\|\.dll$',
+    \ 'link': 'EXAMPLE_BAD_SYMBOLIC_LINKS',
+    \ }
+let g:ctrlp_user_command = {
+    \ 'types': {
+        \ 1: ['.git', 'cd %s && git ls-files'],
+        \ },
+    \ 'fallback': 'find %s -type f'
+    \ }
 
-" for taglist (can't find exuberant ctags)
-let Tlist_Ctags_Cmd = '/usr/local/bin/ctags'
+" For notes
+let g:notes_directory = '~/Notes'
 
+" for tagbar
+let g:tagbar_autoclose = 1
+let g:tagbar_autofocus = 1
+let g:tagbar_autoshowtag = 1
+
+" For indent guides.
+let g:indent_guides_guide_size = 1
+
+if $term =~ "xterm" || &term =~ "256" || $DISPLAY != ""
+    set t_Co=256
+endif
 colorscheme molokai
 
+" For powerline
+set laststatus=2
+
+" For lusty plugins
+set hidden
+let g:LustyJugglerAltTabMode = 1
+let g:LustyJugglerShowKeys = 'a' " show a/s/d/f keys 
+
+" For syntastic
+" set statusline+=%#warningmsg#
+" set statusline+=%{SyntasticStatuslineFlag()}

@@ -199,3 +199,11 @@ export PATH="/home/mcdon/perl5/bin:$PATH"
 # ruby
 export PATH="/home/mcdon/.gem/ruby/1.9.1/bin:$PATH"
 
+# fasd
+eval "$(fasd --init auto)"
+alias v='f -e vim -b viminfo'
+alias o='f -e xdg-open'
+bindkey '^X^A' fasd-complete    # C-x C-a to do fasd-complete (fils and directories)
+bindkey '^X^F' fasd-complete-f  # C-x C-f to do fasd-complete-f (only files)
+bindkey '^X^D' fasd-complete-d  # C-x C-d to do fasd-complete-d (only directories)
+
