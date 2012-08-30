@@ -25,11 +25,12 @@ command! humangui set gui=navigation
 command! nohumangui set gui=nonavigation
 
 " Messing with the passkey situation
-ignorekeys add -except=<C-p>,<C-n>,<C-d>,<C-u>,H,L,d,t 'duckduckgo.com'
-ignorekeys add -except=<C-p>,<C-n>,<C-d>,<C-u>,H,L,d,t 'google.com/voice'
-ignorekeys add -except=<C-p>,<C-n>,<C-d>,<C-u>,H,L,d,t 'google.com/reader'
-ignorekeys add -except=<C-p>,<C-n>,<C-d>,<C-u>,H,L,d,t 'google.com/search'
-ignorekeys add -except=<C-p>,<C-n>,<C-d>,<C-u>,H,L,d,t 'mail.google.com'
-ignorekeys add -except=<C-p>,<C-n>,<C-d>,<C-u>,H,L,d,t 'workflowy.com'
+ignorekeys add -except=<C-p>,<C-n>,<C-d>,<C-u>,H,L,d,t,o 'duckduckgo.com'
+ignorekeys add -except=<C-p>,<C-n>,<C-d>,<C-u>,H,L,d,t,o 'google.com/voice'
+ignorekeys add -except=<C-p>,<C-n>,<C-d>,<C-u>,H,L,d,t,o 'google.com/reader'
+ignorekeys add -except=<C-p>,<C-n>,<C-d>,<C-u>,H,L,d,t,o 'google.com/search'
+ignorekeys add -except=<C-p>,<C-n>,<C-d>,<C-u>,t 'mail.google.com'
+ignorekeys add -except=<C-p>,<C-n>,<C-d>,<C-u>,d,t,o 'workflowy.com'
+ignorekeys add -except=<C-p>,<C-n>,<C-d>,<C-u>,d,t,o 'astrid.com'
 
 " vim: set ft=vimperator:
